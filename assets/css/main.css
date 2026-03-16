@@ -254,6 +254,22 @@ main {
   color: #d0d0d0;
 }
 
+.post-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin: 1rem 0;
+}
+
+.post-content iframe {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 6px;
+  margin: 1rem 0;
+}
+
 .post-content h2,
 .post-content h3,
 .post-content h4 {
