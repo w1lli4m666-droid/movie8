@@ -15,13 +15,11 @@ collections:
     fields:
       - { label: 标题, name: title, widget: string }
       - { label: 发布日期, name: date, widget: datetime }
-      - { label: 草稿, name: draft, widget: boolean, default: false }
       - { label: 封面图片, name: cover, widget: image, required: false }
       - { label: 摘要, name: summary, widget: text, required: false }
-      - { label: 分类, name: categories, widget: list, required: false }
       - { label: 标签, name: tags, widget: list, required: false }
       - { label: 电影名称, name: movie_title, widget: string, required: false }
       - { label: 导演, name: director, widget: string, required: false }
-      - { label: 上映年份, name: release_year, widget: number, required: false }
+      - { label: 上映年份, name: release_year, widget: string, required: false, hint: "支持格式：2019、2019-08-30、2019.08.30" }
       - { label: 评分, name: rating, widget: number, value_type: float, min: 0, max: 10, required: false }
       - { label: 正文, name: body, widget: markdown }

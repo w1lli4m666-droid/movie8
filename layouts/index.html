@@ -1,7 +1,7 @@
 {{ define "main" }}
 <section class="post-list">
   <h1>最新文章</h1>
-  {{ range .Pages }}
+  {{ range site.RegularPages.ByDate.Reverse }}
   {{ $post := . }}
   <article class="post-card">
     {{ with $post.Params.cover }}
