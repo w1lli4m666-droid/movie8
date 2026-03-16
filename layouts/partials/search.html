@@ -2,7 +2,7 @@
 <div id="search"></div>
 <script src="/pagefind/pagefind-ui.js"></script>
 <script>
-  window.addEventListener('DOMContentLoaded', () => {
+  window.addEventListener('load', () => {
     const params = new URLSearchParams(window.location.search);
     const query = params.get('q');
     
@@ -13,9 +13,14 @@
     });
     
     if (query) {
-      // 等待 Pagefind UI 完全初始化后再填充搜索词
-      setTimeout(() => {
-        // 尝试多个可能的选择器
+      // 等待 Pagefind UI 完全初始化
+      const maxAttempts = 20;
+      let attempts = 0;
+      
+      const trySearch = () => {
+        attempts++;
+        
+        // 尝试找到搜索输入框
         let searchInput = document.querySelector('.pf-input-wrapper input');
         if (!searchInput) {
           searchInput = document.querySelector('input[type="search"]');
@@ -23,15 +28,28 @@
         if (!searchInput) {
           searchInput = document.querySelector('input[placeholder*="search" i]');
         }
+        if (!searchInput) {
+          searchInput = document.querySelector('input[placeholder*="Search" i]');
+        }
         
-        if (searchInput) {
-          searchInput.value = decodeURIComponent(query);
-          // 触发多个事件以确保搜索被触发
+        if (searchInput && searchInput.offsetParent !== null) {
+          // 输入框已找到且可见
+          const decodedQuery = decodeURIComponent(query);
+          searchInput.value = decodedQuery;
+          searchInput.focus();
+          
+          // 触发多个事件
           searchInput.dispatchEvent(new Event('input', { bubbles: true }));
           searchInput.dispatchEvent(new Event('change', { bubbles: true }));
-          searchInput.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+          searchInput.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', bubbles: true }));
+          searchInput.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter', code: 'Enter', bubbles: true }));
+        } else if (attempts < maxAttempts) {
+          // 继续尝试
+          setTimeout(trySearch, 100);
         }
-      }, 500);
+      };
+      
+      setTimeout(trySearch, 300);
     }
   });
 </script>
