@@ -1,24 +1,22 @@
 {{ define "main" }}
-<section class="post-list">
-  <h1>最新文章</h1>
+<section class="grid-list">
   {{ range site.RegularPages.ByDate.Reverse }}
   {{ $post := . }}
-  <article class="post-card">
-    {{ with $post.Params.cover }}
-    <a href="{{ $post.RelPermalink }}">
-      <img src="{{ . }}" alt="{{ $post.Title }}封面" class="post-cover">
-    </a>
+  <a href="{{ $post.RelPermalink }}" class="grid-card">
+    {{ if $post.Params.cover }}
+    <img src="{{ $post.Params.cover }}" alt="{{ $post.Title }}" class="grid-cover">
+    {{ else }}
+    <div class="grid-cover grid-cover--placeholder"></div>
     {{ end }}
-    <div class="post-info">
-      <h2><a href="{{ $post.RelPermalink }}">{{ $post.Title }}</a></h2>
-      <time datetime="{{ $post.Date.Format "2006-01-02" }}">{{ $post.Date.Format "2006年01月02日" }}</time>
-      {{ with $post.Summary }}
-      <p class="post-summary">{{ . }}</p>
+    <div class="grid-overlay">
+      <h2 class="grid-title">{{ $post.Title }}</h2>
+      {{ with $post.Params.rating }}
+      <span class="grid-rating">★ {{ . }}</span>
       {{ end }}
     </div>
-  </article>
+  </a>
   {{ else }}
-  <p>暂无文章。</p>
+  <p class="no-posts">暂无文章。</p>
   {{ end }}
 </section>
 {{ end }}
