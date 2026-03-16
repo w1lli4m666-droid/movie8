@@ -227,6 +227,21 @@ main {
   margin-right: 0.3rem;
 }
 
+.meta-link {
+  color: #e8a020;
+  text-decoration: none;
+}
+
+.meta-link:hover {
+  color: #f5c060;
+  text-decoration: underline;
+}
+
+.separator {
+  color: #888;
+  margin: 0 0.2rem;
+}
+
 .post-content {
   font-size: 1rem;
   line-height: 1.8;

@@ -18,15 +18,30 @@
         {{ end }}
         {{ with .Params.director }}
         <dt>导演</dt>
-        <dd>{{ . }}</dd>
+        <dd>
+          {{ range $i, $v := split . " / " }}
+          {{ if gt $i 0 }}<span class="separator">/</span>{{ end }}
+          <a href="{{ "/search/" | relURL }}?q={{ . | urlize }}" class="meta-link">{{ . }}</a>
+          {{ end }}
+        </dd>
         {{ end }}
         {{ with .Params.screenwriter }}
         <dt>编剧</dt>
-        <dd>{{ . }}</dd>
+        <dd>
+          {{ range $i, $v := split . " / " }}
+          {{ if gt $i 0 }}<span class="separator">/</span>{{ end }}
+          <a href="{{ "/search/" | relURL }}?q={{ . | urlize }}" class="meta-link">{{ . }}</a>
+          {{ end }}
+        </dd>
         {{ end }}
         {{ with .Params.cast }}
         <dt>主演</dt>
-        <dd>{{ . }}</dd>
+        <dd>
+          {{ range $i, $v := split . " / " }}
+          {{ if gt $i 0 }}<span class="separator">/</span>{{ end }}
+          <a href="{{ "/search/" | relURL }}?q={{ . | urlize }}" class="meta-link">{{ . }}</a>
+          {{ end }}
+        </dd>
         {{ end }}
         {{ with .Params.release_year }}
         <dt>上映年份</dt>
@@ -39,8 +54,9 @@
         {{ with .Params.tags }}
         <dt>类型</dt>
         <dd>
-          {{ range . }}
-          <span class="tag-item">{{ . }}</span>
+          {{ range $i, $v := split (delimit . " / ") " / " }}
+          {{ if gt $i 0 }}<span class="separator">/</span>{{ end }}
+          <a href="{{ "/search/" | relURL }}?q={{ . | urlize }}" class="meta-link">{{ . }}</a>
           {{ end }}
         </dd>
         {{ end }}
