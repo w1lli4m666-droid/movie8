@@ -3,22 +3,35 @@
 <script src="/pagefind/pagefind-ui.js"></script>
 <script>
   window.addEventListener('DOMContentLoaded', () => {
-    const ui = new PagefindUI({ element: "#search", showSubResults: true });
-    
-    // 从 URL 查询参数获取搜索词
     const params = new URLSearchParams(window.location.search);
     const query = params.get('q');
     
+    const ui = new PagefindUI({ 
+      element: "#search", 
+      showSubResults: true,
+      showImages: false
+    });
+    
     if (query) {
-      // 延迟执行以确保 UI 完全加载
+      // 等待 Pagefind UI 完全初始化后再填充搜索词
       setTimeout(() => {
-        const searchInput = document.querySelector('.pf-input-wrapper input');
+        // 尝试多个可能的选择器
+        let searchInput = document.querySelector('.pf-input-wrapper input');
+        if (!searchInput) {
+          searchInput = document.querySelector('input[type="search"]');
+        }
+        if (!searchInput) {
+          searchInput = document.querySelector('input[placeholder*="search" i]');
+        }
+        
         if (searchInput) {
           searchInput.value = decodeURIComponent(query);
-          // 触发搜索
+          // 触发多个事件以确保搜索被触发
           searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+          searchInput.dispatchEvent(new Event('change', { bubbles: true }));
+          searchInput.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
         }
-      }, 100);
+      }, 500);
     }
   });
 </script>
