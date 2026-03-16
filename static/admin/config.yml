@@ -1,7 +1,9 @@
 backend:
   name: github
-  repo: <username>/<repo-name>
+  repo: w1lli4m666-droid/movie8
   branch: main
+  auth_type: implicit
+  app_id: Ov23lijSuP7nHXdGVwo8
 
 media_folder: static/images/uploads
 public_folder: /images/uploads
