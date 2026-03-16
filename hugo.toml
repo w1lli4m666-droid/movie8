@@ -1,6 +1,7 @@
 baseURL = "https://movie8.win"
 languageCode = "zh-CN"
 title = "电影吧"
+buildFuture = true
 
 [params]
   description = "电影推荐"
