@@ -24,15 +24,32 @@
         if (searchInput) {
           obs.disconnect();
           
-          // 设置值并触发搜索
+          // 设置值
           searchInput.value = decodedQuery;
           
-          // 创建并触发 input 事件
-          const inputEvent = new Event('input', { bubbles: true, cancelable: true });
-          searchInput.dispatchEvent(inputEvent);
+          // 触发一系列事件来确保搜索被执行
+          searchInput.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
+          searchInput.dispatchEvent(new Event('change', { bubbles: true }));
           
-          // 聚焦输入框
+          // 聚焦并模拟用户交互
           searchInput.focus();
+          searchInput.click();
+          
+          // 再次触发 input 事件（有些 UI 需要在 focus 后触发）
+          setTimeout(() => {
+            searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+            
+            // 模拟按下 Enter 键
+            const enterEvent = new KeyboardEvent('keydown', {
+              key: 'Enter',
+              code: 'Enter',
+              keyCode: 13,
+              which: 13,
+              bubbles: true,
+              cancelable: true
+            });
+            searchInput.dispatchEvent(enterEvent);
+          }, 100);
         }
       });
       
