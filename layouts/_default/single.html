@@ -32,15 +32,6 @@
     </div>
     {{ end }}
 
-    {{ with .Params.categories }}
-    <div class="post-categories">
-      <span>分类：</span>
-      {{ range . }}
-      <a href="{{ "/categories/" | relURL }}{{ . | urlize }}/">{{ . }}</a>
-      {{ end }}
-    </div>
-    {{ end }}
-
     {{ with .Params.tags }}
     <div class="post-tags">
       <span>标签：</span>

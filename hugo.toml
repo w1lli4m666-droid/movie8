@@ -5,10 +5,10 @@ buildFuture = true
 
 [params]
   description = "电影推荐"
-  giscus_repo = "<username>/<repo>"
-  giscus_repo_id = "<repo-id>"
-  giscus_category = "Announcements"
-  giscus_category_id = "<category-id>"
+  giscus_repo = "w1lli4m666-droid/movie8"
+  giscus_repo_id = "R_kgDORoKPyg"
+  giscus_category = "General"
+  giscus_category_id = "DIC_kwDORoKPys4C4gbQ"
 
 [taxonomies]
   category = "categories"
