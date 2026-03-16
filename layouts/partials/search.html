@@ -10,56 +10,40 @@
     const ui = new PagefindUI({ 
       element: "#search", 
       showSubResults: true,
-      showImages: false,
-      autofocus: true
+      showImages: false
     });
     
     if (query) {
       const decodedQuery = decodeURIComponent(query);
       
-      // 使用 MutationObserver 监听 DOM 变化
-      const observer = new MutationObserver((mutations, obs) => {
+      // 使用 setInterval 轮询搜索框
+      const checkInterval = setInterval(() => {
         const searchInput = document.querySelector('.pagefind-ui__search-input');
         
         if (searchInput) {
-          obs.disconnect();
+          clearInterval(checkInterval);
           
-          // 设置值
+          // 设置搜索词
           searchInput.value = decodedQuery;
           
-          // 触发一系列事件来确保搜索被执行
-          searchInput.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
+          // 触发 input 事件
+          searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+          
+          // 触发 change 事件
           searchInput.dispatchEvent(new Event('change', { bubbles: true }));
           
-          // 聚焦并模拟用户交互
-          searchInput.focus();
-          searchInput.click();
-          
-          // 再次触发 input 事件（有些 UI 需要在 focus 后触发）
+          // 触发搜索按钮点击
           setTimeout(() => {
-            searchInput.dispatchEvent(new Event('input', { bubbles: true }));
-            
-            // 模拟按下 Enter 键
-            const enterEvent = new KeyboardEvent('keydown', {
-              key: 'Enter',
-              code: 'Enter',
-              keyCode: 13,
-              which: 13,
-              bubbles: true,
-              cancelable: true
-            });
-            searchInput.dispatchEvent(enterEvent);
-          }, 100);
+            const searchButton = document.querySelector('.pagefind-ui__search-input-button');
+            if (searchButton) {
+              searchButton.click();
+            }
+          }, 50);
         }
-      });
+      }, 50);
       
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true
-      });
-      
-      // 5秒后停止观察
-      setTimeout(() => observer.disconnect(), 5000);
+      // 3秒后停止轮询
+      setTimeout(() => clearInterval(checkInterval), 3000);
     }
   });
 </script>
