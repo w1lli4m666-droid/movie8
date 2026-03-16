@@ -216,36 +216,15 @@ main {
   font-size: 0.85rem;
 }
 
-.post-categories,
-.post-tags {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 0.5rem;
-  font-size: 0.85rem;
-}
-
-.post-categories span,
-.post-tags span {
-  color: #888;
-}
-
-.post-categories a,
-.post-tags a {
+.tag-item {
+  display: inline-block;
   background-color: #2a2a2a;
   border: 1px solid #3a3a3a;
   border-radius: 3px;
   padding: 0.15rem 0.5rem;
   color: #ccc;
   font-size: 0.8rem;
-}
-
-.post-categories a:hover,
-.post-tags a:hover {
-  border-color: #e8a020;
-  color: #e8a020;
-  text-decoration: none;
+  margin-right: 0.3rem;
 }
 
 .post-content {

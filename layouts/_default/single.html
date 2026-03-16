@@ -8,7 +8,7 @@
     <img src="{{ . }}" alt="{{ $.Title }} 封面" class="post-cover">
     {{ end }}
 
-    {{ if or .Params.movie_title .Params.director .Params.release_year .Params.rating }}
+    {{ if or .Params.movie_title .Params.director .Params.screenwriter .Params.cast .Params.release_year .Params.rating .Params.tags }}
     <div class="movie-meta">
       <h2>电影信息</h2>
       <dl>
@@ -20,6 +20,14 @@
         <dt>导演</dt>
         <dd>{{ . }}</dd>
         {{ end }}
+        {{ with .Params.screenwriter }}
+        <dt>编剧</dt>
+        <dd>{{ . }}</dd>
+        {{ end }}
+        {{ with .Params.cast }}
+        <dt>主演</dt>
+        <dd>{{ . }}</dd>
+        {{ end }}
         {{ with .Params.release_year }}
         <dt>上映年份</dt>
         <dd>{{ . }}</dd>
@@ -28,16 +36,15 @@
         <dt>评分</dt>
         <dd>{{ . }} / 10</dd>
         {{ end }}
+        {{ with .Params.tags }}
+        <dt>类型</dt>
+        <dd>
+          {{ range . }}
+          <span class="tag-item">{{ . }}</span>
+          {{ end }}
+        </dd>
+        {{ end }}
       </dl>
-    </div>
-    {{ end }}
-
-    {{ with .Params.tags }}
-    <div class="post-tags">
-      <span>标签：</span>
-      {{ range . }}
-      <a href="{{ "/tags/" | relURL }}{{ . | urlize }}/">{{ . }}</a>
-      {{ end }}
     </div>
     {{ end }}
   </header>
