@@ -2,8 +2,7 @@ backend:
   name: github
   repo: w1lli4m666-droid/movie8
   branch: main
-  auth_type: implicit
-  app_id: Ov23lijSuP7nHXdGVwo8
+  base_url: https://api.decapcms.org
 
 media_folder: static/images/uploads
 public_folder: /images/uploads
