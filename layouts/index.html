@@ -1,0 +1,24 @@
+{{ define "main" }}
+<section class="post-list">
+  <h1>最新文章</h1>
+  {{ range .Pages }}
+  {{ $post := . }}
+  <article class="post-card">
+    {{ with $post.Params.cover }}
+    <a href="{{ $post.RelPermalink }}">
+      <img src="{{ . }}" alt="{{ $post.Title }}封面" class="post-cover">
+    </a>
+    {{ end }}
+    <div class="post-info">
+      <h2><a href="{{ $post.RelPermalink }}">{{ $post.Title }}</a></h2>
+      <time datetime="{{ $post.Date.Format "2006-01-02" }}">{{ $post.Date.Format "2006年01月02日" }}</time>
+      {{ with $post.Summary }}
+      <p class="post-summary">{{ . }}</p>
+      {{ end }}
+    </div>
+  </article>
+  {{ else }}
+  <p>暂无文章。</p>
+  {{ end }}
+</section>
+{{ end }}

@@ -1,0 +1,45 @@
+{{ define "main" }}
+<section class="list-page">
+  <h1>{{ .Title }}</h1>
+
+  {{ with .Content }}
+  <div class="list-description">{{ . }}</div>
+  {{ end }}
+
+  {{ if .Pages }}
+  <ul class="post-list">
+    {{ range .Pages }}
+    <li class="post-item">
+      <article>
+        {{ with .Params.cover }}
+        <img src="{{ . }}" alt="{{ $.Title }} 封面" class="post-cover-small">
+        {{ end }}
+        <div class="post-info">
+          <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+          <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006年01月02日" }}</time>
+          {{ with .Summary }}
+          <p class="post-summary">{{ . }}</p>
+          {{ end }}
+        </div>
+      </article>
+    </li>
+    {{ end }}
+  </ul>
+  {{ else }}
+  <p>该分类下暂无文章。</p>
+  {{ end }}
+
+  {{ $paginator := .Paginator }}
+  {{ if gt $paginator.TotalPages 1 }}
+  <nav class="pagination">
+    {{ if $paginator.HasPrev }}
+    <a href="{{ $paginator.Prev.URL }}">&laquo; 上一页</a>
+    {{ end }}
+    <span>第 {{ $paginator.PageNumber }} 页，共 {{ $paginator.TotalPages }} 页</span>
+    {{ if $paginator.HasNext }}
+    <a href="{{ $paginator.Next.URL }}">下一页 &raquo;</a>
+    {{ end }}
+  </nav>
+  {{ end }}
+</section>
+{{ end }}
