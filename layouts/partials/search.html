@@ -3,6 +3,22 @@
 <script src="/pagefind/pagefind-ui.js"></script>
 <script>
   window.addEventListener('DOMContentLoaded', () => {
-    new PagefindUI({ element: "#search", showSubResults: true });
+    const ui = new PagefindUI({ element: "#search", showSubResults: true });
+    
+    // 从 URL 查询参数获取搜索词
+    const params = new URLSearchParams(window.location.search);
+    const query = params.get('q');
+    
+    if (query) {
+      // 延迟执行以确保 UI 完全加载
+      setTimeout(() => {
+        const searchInput = document.querySelector('.pf-input-wrapper input');
+        if (searchInput) {
+          searchInput.value = decodeURIComponent(query);
+          // 触发搜索
+          searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      }, 100);
+    }
   });
 </script>

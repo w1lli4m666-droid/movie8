@@ -21,7 +21,7 @@
         <dd>
           {{ range $i, $v := split . " / " }}
           {{ if gt $i 0 }}<span class="separator">/</span>{{ end }}
-          <a href="{{ "/search/" | relURL }}?q={{ . | urlize }}" class="meta-link">{{ . }}</a>
+          <a href="{{ "/search/" | relURL }}?q={{ $v | urlize }}" class="meta-link">{{ $v }}</a>
           {{ end }}
         </dd>
         {{ end }}
@@ -30,7 +30,7 @@
         <dd>
           {{ range $i, $v := split . " / " }}
           {{ if gt $i 0 }}<span class="separator">/</span>{{ end }}
-          <a href="{{ "/search/" | relURL }}?q={{ . | urlize }}" class="meta-link">{{ . }}</a>
+          <a href="{{ "/search/" | relURL }}?q={{ $v | urlize }}" class="meta-link">{{ $v }}</a>
           {{ end }}
         </dd>
         {{ end }}
@@ -39,7 +39,7 @@
         <dd>
           {{ range $i, $v := split . " / " }}
           {{ if gt $i 0 }}<span class="separator">/</span>{{ end }}
-          <a href="{{ "/search/" | relURL }}?q={{ . | urlize }}" class="meta-link">{{ . }}</a>
+          <a href="{{ "/search/" | relURL }}?q={{ $v | urlize }}" class="meta-link">{{ $v }}</a>
           {{ end }}
         </dd>
         {{ end }}
@@ -54,9 +54,9 @@
         {{ with .Params.tags }}
         <dt>类型</dt>
         <dd>
-          {{ range $i, $v := split (delimit . " / ") " / " }}
+          {{ range $i, $v := . }}
           {{ if gt $i 0 }}<span class="separator">/</span>{{ end }}
-          <a href="{{ "/search/" | relURL }}?q={{ . | urlize }}" class="meta-link">{{ . }}</a>
+          <a href="{{ "/search/" | relURL }}?q={{ $v | urlize }}" class="meta-link">{{ $v }}</a>
           {{ end }}
         </dd>
         {{ end }}
