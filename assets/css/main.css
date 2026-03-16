@@ -371,15 +371,7 @@ main {
   text-decoration: none;
 }
 
-.tag-card-cover {
-  display: none;
-}
-
-.tag-card-overlay {
-  position: static;
-  background: none;
-  padding: 0;
-  opacity: 1;
+.tag-card-content {
   text-align: center;
 }
 
@@ -387,7 +379,12 @@ main {
   font-size: 0.95rem;
   color: #f0f0f0;
   font-weight: 600;
-  margin: 0;
+  margin: 0 0 0.25rem 0;
+}
+
+.tag-card-count {
+  font-size: 0.75rem;
+  color: #888;
 }
 
 .pagination {

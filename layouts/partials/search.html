@@ -6,50 +6,43 @@
     const params = new URLSearchParams(window.location.search);
     const query = params.get('q');
     
+    // 初始化 Pagefind UI
     const ui = new PagefindUI({ 
       element: "#search", 
       showSubResults: true,
-      showImages: false
+      showImages: false,
+      autofocus: true
     });
     
     if (query) {
-      // 等待 Pagefind UI 完全初始化
-      const maxAttempts = 20;
-      let attempts = 0;
+      const decodedQuery = decodeURIComponent(query);
       
-      const trySearch = () => {
-        attempts++;
+      // 使用 MutationObserver 监听 DOM 变化
+      const observer = new MutationObserver((mutations, obs) => {
+        const searchInput = document.querySelector('.pagefind-ui__search-input');
         
-        // 尝试找到搜索输入框
-        let searchInput = document.querySelector('.pf-input-wrapper input');
-        if (!searchInput) {
-          searchInput = document.querySelector('input[type="search"]');
-        }
-        if (!searchInput) {
-          searchInput = document.querySelector('input[placeholder*="search" i]');
-        }
-        if (!searchInput) {
-          searchInput = document.querySelector('input[placeholder*="Search" i]');
-        }
-        
-        if (searchInput && searchInput.offsetParent !== null) {
-          // 输入框已找到且可见
-          const decodedQuery = decodeURIComponent(query);
-          searchInput.value = decodedQuery;
-          searchInput.focus();
+        if (searchInput) {
+          obs.disconnect();
           
-          // 触发多个事件
-          searchInput.dispatchEvent(new Event('input', { bubbles: true }));
-          searchInput.dispatchEvent(new Event('change', { bubbles: true }));
-          searchInput.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', bubbles: true }));
-          searchInput.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter', code: 'Enter', bubbles: true }));
-        } else if (attempts < maxAttempts) {
-          // 继续尝试
-          setTimeout(trySearch, 100);
+          // 设置值并触发搜索
+          searchInput.value = decodedQuery;
+          
+          // 创建并触发 input 事件
+          const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+          searchInput.dispatchEvent(inputEvent);
+          
+          // 聚焦输入框
+          searchInput.focus();
         }
-      };
+      });
       
-      setTimeout(trySearch, 300);
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+      
+      // 5秒后停止观察
+      setTimeout(() => observer.disconnect(), 5000);
     }
   });
 </script>
