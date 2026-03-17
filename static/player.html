@@ -29,30 +29,30 @@
             object-fit: contain !important;
         }
         
-        /* 桌面端进度条优化 - 增加悬停区域 */
+        /* 桌面端进度条优化 - 增加厚度和悬停区域 */
         .art-progress {
-            height: 3px !important;
+            height: 5px !important; /* 桌面端更粗的进度条 */
             position: relative !important;
         }
         
         .art-progress::before {
             content: '';
             position: absolute;
-            top: -8px;
+            top: -10px;
             left: 0;
             right: 0;
-            height: 20px; /* 增加悬停区域 */
+            height: 25px; /* 增加悬停区域 */
             background: transparent;
             cursor: pointer;
         }
         
         .art-progress-hover {
-            height: 3px !important;
+            height: 5px !important;
         }
         
         .art-progress-dot {
-            width: 12px !important;
-            height: 12px !important;
+            width: 14px !important;
+            height: 14px !important;
             position: relative !important;
             z-index: 2 !important;
         }
@@ -60,14 +60,19 @@
         /* 桌面端悬停效果 */
         @media (min-width: 769px) {
             .art-progress:hover {
-                height: 5px !important;
+                height: 7px !important;
                 transition: height 0.2s ease !important;
             }
             
             .art-progress:hover .art-progress-dot {
-                width: 14px !important;
-                height: 14px !important;
+                width: 16px !important;
+                height: 16px !important;
                 transition: all 0.2s ease !important;
+            }
+            
+            /* 桌面端控制栏调整 - 避免与粗进度条重叠 */
+            .art-controls {
+                padding-top: 12px !important; /* 增加上边距避免重叠 */
             }
         }
         
@@ -81,20 +86,24 @@
                 align-items: center !important;
             }
             
-            /* 进度条容器调整 - 向上移动更多避免重叠 */
+            /* 进度条容器调整 - 向上移动避免重叠 */
             .art-controls-progress {
-                margin: 0 6px !important;
+                margin: 0 8px !important; /* 增加左右边距 */
                 height: auto !important;
                 position: relative !important;
-                top: -16px !important; /* 向上移动更多 */
+                top: -18px !important; /* 向上移动更多 */
                 flex: 1 !important;
+                /* 移除所有可能干扰的样式 */
+                transform: none !important;
+                opacity: 1 !important;
+                visibility: visible !important;
             }
             
             /* 控制栏左右两侧布局 */
             .art-controls-left {
                 display: flex !important;
                 align-items: center !important;
-                gap: 8px !important;
+                gap: 10px !important; /* 增加间距 */
                 flex-shrink: 0 !important;
             }
             
@@ -118,12 +127,13 @@
                 z-index: 10 !important;
             }
             
-            /* 时间显示调整 - 确保不重叠 */
+            /* 时间显示调整 - 确保不重叠，向右移动 */
             .art-control-time {
                 font-size: 11px !important;
-                min-width: 60px !important;
+                min-width: 65px !important; /* 增加宽度 */
                 white-space: nowrap !important;
-                text-align: center !important;
+                text-align: left !important; /* 左对齐 */
+                padding-left: 5px !important; /* 向右移动 */
                 flex-shrink: 0 !important;
             }
             
@@ -151,23 +161,42 @@
                 height: 36px !important;
             }
             
-            /* 移动端进度条优化 */
+            /* 移动端进度条优化 - 最小化干扰 */
             .art-progress {
                 height: 4px !important;
+                /* 移除所有可能干扰进度更新的样式 */
+                position: static !important;
+                transform: none !important;
+                transition: none !important;
             }
             
             .art-progress::before {
-                top: -10px !important;
-                height: 24px !important; /* 移动端更大的触摸区域 */
+                top: -12px !important;
+                height: 28px !important; /* 移动端更大的触摸区域 */
             }
             
             .art-progress-hover {
                 height: 4px !important;
+                /* 确保不干扰原生功能 */
+                position: static !important;
+                transform: none !important;
             }
             
             .art-progress-dot {
                 width: 14px !important;
                 height: 14px !important;
+                /* 确保圆点可以正常移动 */
+                position: relative !important;
+                transform: none !important;
+                transition: none !important;
+            }
+            
+            /* 确保进度条内部元素不被干扰 */
+            .art-progress-loaded,
+            .art-progress-played {
+                position: static !important;
+                transform: none !important;
+                transition: none !important;
             }
             
             /* 隐藏进度条上方的时间提示 */
@@ -184,11 +213,14 @@
             }
             
             .art-controls-progress {
-                top: -14px !important; /* 超小屏幕进度条向上移动 */
-                margin: 0 4px !important;
+                top: -16px !important; /* 超小屏幕进度条向上移动 */
+                margin: 0 6px !important;
             }
             
-            .art-controls-left,
+            .art-controls-left {
+                gap: 8px !important;
+            }
+            
             .art-controls-right {
                 gap: 6px !important;
             }
@@ -201,7 +233,7 @@
             
             .art-control-time {
                 font-size: 10px !important;
-                min-width: 50px !important;
+                min-width: 55px !important;
             }
             
             .art-control-setting,
