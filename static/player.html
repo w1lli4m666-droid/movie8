@@ -33,24 +33,35 @@
         @media (max-width: 768px) {
             /* 控制栏响应式调整 */
             .art-controls {
-                padding: 6px 8px !important;
-                height: 44px !important;
+                padding: 8px 10px !important;
+                height: 48px !important;
+                display: flex !important;
+                align-items: center !important;
             }
             
-            /* 进度条容器调整 - 向上移动避免重叠 */
+            /* 进度条容器调整 - 向上移动更多避免重叠 */
             .art-controls-progress {
-                margin: 0 4px !important;
+                margin: 0 6px !important;
                 height: auto !important;
                 pointer-events: auto !important;
                 position: relative !important;
-                top: -8px !important; /* 向上移动进度条 */
+                top: -12px !important; /* 向上移动更多 */
+                flex: 1 !important;
             }
             
-            /* 控制栏按钮间距调整 */
-            .art-controls-left,
-            .art-controls-right {
-                gap: 6px !important;
+            /* 控制栏左右两侧布局 */
+            .art-controls-left {
+                display: flex !important;
                 align-items: center !important;
+                gap: 8px !important;
+                flex-shrink: 0 !important;
+            }
+            
+            .art-controls-right {
+                display: flex !important;
+                align-items: center !important;
+                gap: 8px !important;
+                flex-shrink: 0 !important;
             }
             
             /* 按钮大小调整 */
@@ -59,6 +70,7 @@
                 height: 36px !important;
                 min-width: 36px !important;
                 pointer-events: auto !important;
+                flex-shrink: 0 !important;
             }
             
             /* 播放按钮确保可点击 */
@@ -67,11 +79,13 @@
                 z-index: 10 !important;
             }
             
-            /* 时间显示调整 */
+            /* 时间显示调整 - 确保不重叠 */
             .art-control-time {
-                font-size: 12px !important;
-                min-width: auto !important;
+                font-size: 11px !important;
+                min-width: 60px !important;
                 white-space: nowrap !important;
+                text-align: center !important;
+                flex-shrink: 0 !important;
             }
             
             /* 音量控制在移动端隐藏 */
@@ -102,12 +116,18 @@
         /* 超小屏幕优化 */
         @media (max-width: 480px) {
             .art-controls {
-                padding: 5px 6px !important;
-                height: 40px !important;
+                padding: 6px 8px !important;
+                height: 44px !important;
             }
             
             .art-controls-progress {
-                top: -6px !important; /* 超小屏幕进度条向上移动少一点 */
+                top: -10px !important; /* 超小屏幕进度条向上移动 */
+                margin: 0 4px !important;
+            }
+            
+            .art-controls-left,
+            .art-controls-right {
+                gap: 6px !important;
             }
             
             .art-control {
@@ -117,7 +137,8 @@
             }
             
             .art-control-time {
-                font-size: 11px !important;
+                font-size: 10px !important;
+                min-width: 50px !important;
             }
             
             .art-control-setting,
@@ -127,34 +148,24 @@
             }
         }
         
-        /* 进度条优化 - 减小厚度，确保可拖拽 */
+        /* 进度条优化 - 不破坏原有功能 */
         .art-progress {
             height: 3px !important;
-            cursor: pointer !important;
-            pointer-events: auto !important;
         }
         
         .art-progress-hover {
             height: 3px !important;
-            pointer-events: auto !important;
         }
         
         .art-progress-dot {
             width: 12px !important;
             height: 12px !important;
-            pointer-events: auto !important;
-            cursor: grab !important;
         }
         
-        .art-progress-dot:active {
-            cursor: grabbing !important;
-        }
-        
-        /* 移动端进度条优化 */
+        /* 移动端进度条优化 - 保持交互功能 */
         @media (max-width: 768px) {
             .art-progress {
                 height: 4px !important;
-                touch-action: none !important;
             }
             
             .art-progress-hover {
@@ -164,7 +175,6 @@
             .art-progress-dot {
                 width: 14px !important;
                 height: 14px !important;
-                touch-action: none !important;
             }
             
             /* 隐藏进度条上方的时间提示 */
