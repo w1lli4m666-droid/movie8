@@ -33,20 +33,24 @@
         @media (max-width: 768px) {
             /* 控制栏响应式调整 */
             .art-controls {
-                padding: 5px 8px !important;
+                padding: 6px 8px !important;
+                height: 44px !important;
+            }
+            
+            /* 进度条容器调整 - 向上移动避免重叠 */
+            .art-controls-progress {
+                margin: 0 4px !important;
+                height: auto !important;
+                pointer-events: auto !important;
+                position: relative !important;
+                top: -8px !important; /* 向上移动进度条 */
             }
             
             /* 控制栏按钮间距调整 */
             .art-controls-left,
             .art-controls-right {
-                gap: 4px !important;
-            }
-            
-            /* 进度条容器调整 - 确保可交互 */
-            .art-controls-progress {
-                margin: 0 4px !important;
-                height: auto !important;
-                pointer-events: auto !important;
+                gap: 6px !important;
+                align-items: center !important;
             }
             
             /* 按钮大小调整 */
@@ -67,6 +71,7 @@
             .art-control-time {
                 font-size: 12px !important;
                 min-width: auto !important;
+                white-space: nowrap !important;
             }
             
             /* 音量控制在移动端隐藏 */
@@ -74,16 +79,16 @@
                 display: none !important;
             }
             
-            /* 设置按钮在小屏幕上隐藏 */
+            /* 恢复设置按钮 - 用于访问播放速度 */
             .art-control-setting {
-                display: none !important;
-            }
-            
-            /* 确保播放速度按钮显示 */
-            .art-control-playbackRate {
                 display: flex !important;
                 width: 36px !important;
                 height: 36px !important;
+            }
+            
+            /* 隐藏独立的播放速度按钮 - 通过设置访问 */
+            .art-control-playbackRate {
+                display: none !important;
             }
             
             /* 确保画中画按钮显示 */
@@ -97,7 +102,12 @@
         /* 超小屏幕优化 */
         @media (max-width: 480px) {
             .art-controls {
-                padding: 4px 6px !important;
+                padding: 5px 6px !important;
+                height: 40px !important;
+            }
+            
+            .art-controls-progress {
+                top: -6px !important; /* 超小屏幕进度条向上移动少一点 */
             }
             
             .art-control {
@@ -110,22 +120,22 @@
                 font-size: 11px !important;
             }
             
-            .art-control-playbackRate,
+            .art-control-setting,
             .art-control-pip {
                 width: 32px !important;
                 height: 32px !important;
             }
         }
         
-        /* 进度条优化 - 确保可拖拽 */
+        /* 进度条优化 - 减小厚度，确保可拖拽 */
         .art-progress {
-            height: 4px !important;
+            height: 3px !important;
             cursor: pointer !important;
             pointer-events: auto !important;
         }
         
         .art-progress-hover {
-            height: 4px !important;
+            height: 3px !important;
             pointer-events: auto !important;
         }
         
@@ -143,17 +153,17 @@
         /* 移动端进度条优化 */
         @media (max-width: 768px) {
             .art-progress {
-                height: 6px !important;
+                height: 4px !important;
                 touch-action: none !important;
             }
             
             .art-progress-hover {
-                height: 6px !important;
+                height: 4px !important;
             }
             
             .art-progress-dot {
-                width: 16px !important;
-                height: 16px !important;
+                width: 14px !important;
+                height: 14px !important;
                 touch-action: none !important;
             }
             
@@ -226,7 +236,7 @@
                     autoSize: false,
                     autoMini: true,
                     aspectRatio: false,
-                    setting: !isMobile, // 移动端隐藏设置
+                    setting: true, // 恢复设置按钮，用于访问播放速度
                     fullscreen: true,
                     fullscreenWeb: true,
                     pip: true, // 保留画中画功能
