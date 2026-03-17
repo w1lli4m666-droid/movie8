@@ -14,6 +14,11 @@
   <link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ .Permalink }}" title="{{ $.Site.Title }}">
   {{ end }}
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  {{ $js := resources.Get "js/video-player.js" }}
+  {{ if $js }}
+  {{ $js = $js | resources.Minify | resources.Fingerprint }}
+  <script src="{{ $js.RelPermalink }}"></script>
+  {{ end }}
 </head>
 <body>
   <!-- Turnstile 验证层 -->

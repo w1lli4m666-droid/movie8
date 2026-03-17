@@ -611,3 +611,108 @@ footer {
   --pagefind-ui-border-radius: 6px;
   --pagefind-ui-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
+
+/* ===== Videos Section ===== */
+.videos-section {
+  background-color: #1a1a1a;
+  border: 1px solid #2e2e2e;
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.videos-section h2 {
+  font-size: 0.95rem;
+  color: #e8a020;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.movie-video,
+.series-videos {
+  margin-bottom: 1.5rem;
+}
+
+.episode {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #2e2e2e;
+}
+
+.episode:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.episode h3 {
+  font-size: 0.95rem;
+  color: #f0f0f0;
+  margin-bottom: 0.75rem;
+}
+
+.video-player {
+  margin-bottom: 0.75rem;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.video-player iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: none;
+  display: block;
+}
+
+.alternatives {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.alternatives label {
+  font-size: 0.85rem;
+  color: #888;
+  white-space: nowrap;
+}
+
+.alt-source-btn {
+  padding: 0.4rem 0.8rem;
+  background-color: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  color: #ccc;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.alt-source-btn:hover {
+  background-color: #3a3a3a;
+  border-color: #e8a020;
+  color: #e8a020;
+}
+
+.alt-source-btn.active {
+  background-color: #e8a020;
+  border-color: #e8a020;
+  color: #111;
+}
+
+/* ===== Responsive: Mobile ===== */
+@media (max-width: 768px) {
+  .videos-section {
+    padding: 1rem;
+  }
+
+  .alternatives {
+    gap: 0.3rem;
+  }
+
+  .alt-source-btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+  }
+}

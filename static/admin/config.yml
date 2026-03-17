@@ -24,4 +24,38 @@ collections:
       - { label: 主演, name: cast, widget: string, required: false }
       - { label: 上映年份, name: release_year, widget: string, required: false, hint: "支持格式：2019、2019-08-30、2019.08.30" }
       - { label: 评分, name: rating, widget: number, value_type: float, min: 0, max: 10, required: false }
+      - label: 视频
+        name: videos
+        widget: list
+        required: false
+        types:
+          - label: 电影
+            name: movie
+            widget: object
+            fields:
+              - { label: 主源 URL, name: url, widget: string, hint: "视频链接，支持 m3u8、mp4 等格式" }
+              - label: 备用源
+                name: alternatives
+                widget: list
+                required: false
+                field: { label: 备用源, name: alt, widget: object, fields: [{ label: 名称, name: name, widget: string }, { label: URL, name: url, widget: string }] }
+          - label: 连续剧
+            name: series
+            widget: object
+            fields:
+              - label: 集数
+                name: episodes
+                widget: list
+                field:
+                  label: 集
+                  name: episode
+                  widget: object
+                  fields:
+                    - { label: 集数, name: number, widget: string, hint: "例如：第1集、第2集" }
+                    - { label: 主源 URL, name: url, widget: string }
+                    - label: 备用源
+                      name: alternatives
+                      widget: list
+                      required: false
+                      field: { label: 备用源, name: alt, widget: object, fields: [{ label: 名称, name: name, widget: string }, { label: URL, name: url, widget: string }] }
       - { label: 正文, name: body, widget: markdown }
