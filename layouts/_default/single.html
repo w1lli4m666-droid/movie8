@@ -75,14 +75,15 @@
           <div class="video-player">
             <iframe src="/player.html?url={{ .url | urlize }}" style="width: 100%; aspect-ratio: 16/9; border: none;" allowfullscreen></iframe>
           </div>
-          {{ with .alternatives }}
           <div class="alternatives">
-            <label>备用源：</label>
+            <label>视频源：</label>
+            <button class="alt-source-btn active" data-url="{{ .url }}">{{ .name | default "主源" }}</button>
+            {{ with .alternatives }}
             {{ range . }}
             <button class="alt-source-btn" data-url="{{ .url }}">{{ .name }}</button>
             {{ end }}
+            {{ end }}
           </div>
-          {{ end }}
         </div>
       {{ else if eq .type "series" }}
         <!-- Series type -->
@@ -94,14 +95,15 @@
               <div class="video-player">
                 <iframe src="/player.html?url={{ .url | urlize }}" style="width: 100%; aspect-ratio: 16/9; border: none;" allowfullscreen></iframe>
               </div>
-              {{ with .alternatives }}
               <div class="alternatives">
-                <label>备用源：</label>
+                <label>视频源：</label>
+                <button class="alt-source-btn active" data-url="{{ .url }}">{{ .name | default "主源" }}</button>
+                {{ with .alternatives }}
                 {{ range . }}
                 <button class="alt-source-btn" data-url="{{ .url }}">{{ .name }}</button>
                 {{ end }}
+                {{ end }}
               </div>
-              {{ end }}
             </div>
           </div>
           {{ end }}

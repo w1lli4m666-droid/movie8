@@ -33,6 +33,7 @@ collections:
             name: movie
             widget: object
             fields:
+              - { label: 主源名称, name: name, widget: string, hint: "主源的显示名称，如：高清源、官方源等" }
               - { label: 主源 URL, name: url, widget: string, hint: "视频链接，支持 m3u8、mp4 等格式" }
               - label: 备用源
                 name: alternatives
@@ -52,6 +53,7 @@ collections:
                   widget: object
                   fields:
                     - { label: 集数, name: number, widget: string, hint: "例如：第1集、第2集" }
+                    - { label: 主源名称, name: name, widget: string, hint: "主源的显示名称" }
                     - { label: 主源 URL, name: url, widget: string }
                     - label: 备用源
                       name: alternatives
