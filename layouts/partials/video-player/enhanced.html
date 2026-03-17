@@ -1,0 +1,77 @@
+{{/*
+  增强版视频播放器组件
+  参数：
+  - .videos: 视频数据数组
+  - .containerId: 播放器容器ID（可选，默认为 "video-player"）
+*/}}
+
+{{ $containerId := .containerId | default "video-player" }}
+{{ $videos := .videos }}
+
+{{ if $videos }}
+<div class="enhanced-video-section">
+  <!-- 播放器容器 -->
+  <div id="{{ $containerId }}" class="enhanced-video-container"></div>
+  
+  <!-- 加载增强版播放器的脚本和样式 -->
+  <link rel="stylesheet" href="{{ "css/video-player-enhanced.css" | relURL }}">
+  
+  <!-- ArtPlayer 和 HLS.js 依赖 -->
+  <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  
+  <!-- 增强版播放器脚本 -->
+  <script src="{{ "js/video-player-enhanced.js" | relURL }}"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 准备视频数据
+      const videoData = {{ index $videos 0 | jsonify }};
+      
+      // 初始化增强版播放器
+      try {
+        const player = new VideoPlayerSystem('{{ $containerId }}', videoData, {
+          autoplay: false,
+          volume: 0.7,
+          enableProgressManager: true
+        });
+        
+        // 监听播放器事件
+        player.on('playerReady', function() {
+          console.log('Enhanced video player ready');
+        });
+        
+        player.on('episodeChanged', function(data) {
+          console.log('Episode changed:', data.episode.number);
+        });
+        
+        player.on('sourceChanged', function(data) {
+          console.log('Source changed:', data.sourceId);
+        });
+        
+        player.on('episodeWatched', function(data) {
+          console.log('Episode watched:', data.episodeId);
+        });
+        
+        // 保存播放器实例到全局，便于调试
+        window.videoPlayer = player;
+        
+      } catch (error) {
+        console.error('Failed to initialize enhanced video player:', error);
+        
+        // 回退到传统播放器
+        document.getElementById('{{ $containerId }}').innerHTML = `
+          <div class="fallback-notice">
+            <p>增强版播放器加载失败，正在使用传统播放器...</p>
+          </div>
+        `;
+        
+        // 加载传统播放器
+        setTimeout(function() {
+          {{ partial "video-player/legacy.html" (dict "videos" $videos) }}
+        }, 1000);
+      }
+    });
+  </script>
+</div>
+{{ end }}

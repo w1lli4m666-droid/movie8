@@ -1,0 +1,100 @@
+{{/*
+  传统视频播放器组件（向后兼容）
+  参数：
+  - .videos: 视频数据数组
+*/}}
+
+{{ $videos := .videos }}
+
+{{ if $videos }}
+<div class="legacy-videos-section">
+  {{ range $videos }}
+    {{ if eq .type "movie" }}
+      <!-- Movie type -->
+      <div class="movie-video">
+        <h3>{{ .label | default "电影" }}</h3>
+        <div class="video-sources">
+          <div class="video-player">
+            <iframe src="/player.html?url={{ .url | urlize }}" style="width: 100%; aspect-ratio: 16/9; border: none;" allowfullscreen></iframe>
+          </div>
+          <div class="alternatives">
+            <label>视频源：</label>
+            <button class="alt-source-btn active" data-url="{{ .url }}">{{ .name | default "主源" }}</button>
+            {{ with .alternatives }}
+            {{ range . }}
+            <button class="alt-source-btn" data-url="{{ .url }}">{{ .name }}</button>
+            {{ end }}
+            {{ end }}
+          </div>
+        </div>
+      </div>
+    {{ else if eq .type "series" }}
+      <!-- Series type -->
+      <div class="series-videos">
+        <h3>{{ .label | default "连续剧" }}</h3>
+        
+        {{ if .seasons }}
+          <!-- 新格式：多季结构 -->
+          {{ range .seasons }}
+            <div class="season-group">
+              <h4>{{ .season_title | default (printf "第%d季" .season_number) }}</h4>
+              {{ range .episodes }}
+              <div class="episode">
+                <h5>{{ .number }}{{ with .title }}: {{ . }}{{ end }}</h5>
+                <div class="video-sources">
+                  <div class="video-player">
+                    <iframe src="/player.html?url={{ .url | urlize }}" style="width: 100%; aspect-ratio: 16/9; border: none;" allowfullscreen></iframe>
+                  </div>
+                  <div class="alternatives">
+                    <label>视频源：</label>
+                    <button class="alt-source-btn active" data-url="{{ .url }}">{{ .name | default "主源" }}</button>
+                    {{ with .alternatives }}
+                    {{ range . }}
+                    <button class="alt-source-btn" data-url="{{ .url }}">{{ .name }}</button>
+                    {{ end }}
+                    {{ end }}
+                  </div>
+                </div>
+              </div>
+              {{ end }}
+            </div>
+          {{ end }}
+        {{ else if .episodes }}
+          <!-- 旧格式：单季结构 -->
+          {{ range .episodes }}
+          <div class="episode">
+            <h4>{{ .number }}{{ with .title }}: {{ . }}{{ end }}</h4>
+            <div class="video-sources">
+              <div class="video-player">
+                <iframe src="/player.html?url={{ .url | urlize }}" style="width: 100%; aspect-ratio: 16/9; border: none;" allowfullscreen></iframe>
+              </div>
+              <div class="alternatives">
+                <label>视频源：</label>
+                <button class="alt-source-btn active" data-url="{{ .url }}">{{ .name | default "主源" }}</button>
+                {{ with .alternatives }}
+                {{ range . }}
+                <button class="alt-source-btn" data-url="{{ .url }}">{{ .name }}</button>
+                {{ end }}
+                {{ end }}
+              </div>
+            </div>
+          </div>
+          {{ end }}
+        {{ end }}
+      </div>
+    {{ else }}
+      <!-- 未知类型 -->
+      <div class="unknown-video-type">
+        <h3>未知视频类型</h3>
+        <div style="background: #f5f5f5; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+          <strong>调试信息：</strong><br>
+          <pre>{{ . | jsonify }}</pre>
+        </div>
+      </div>
+    {{ end }}
+  {{ end }}
+  
+  <!-- 传统播放器的 JavaScript -->
+  <script src="{{ "js/video-player.js" | relURL }}"></script>
+</div>
+{{ end }}

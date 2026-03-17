@@ -33,31 +33,173 @@ collections:
             name: movie
             widget: object
             fields:
-              - { label: 主源名称, name: name, widget: string, hint: "主源的显示名称，如：高清源、官方源等" }
-              - { label: 主源 URL, name: url, widget: string, hint: "视频链接，支持 m3u8、mp4 等格式" }
+              - label: 视频标签
+                name: label
+                widget: string
+                required: false
+                default: "电影"
+                hint: "自定义显示名称，如：电影、正片、花絮、预告片等（最多20个字符）"
+                pattern: ['^.{1,20}$', '标签长度必须在1-20个字符之间']
+              - label: 主源名称
+                name: name
+                widget: string
+                hint: "主源的显示名称，如：高清源、官方源、蓝光源等"
+              - label: 主源 URL
+                name: url
+                widget: string
+                hint: "视频链接，支持 m3u8、mp4、webm 等格式"
+                pattern: ['^https?://.+\.(m3u8|mp4|webm|avi|mkv|flv|mov)(\?.*)?$|^https?://.*\.(m3u8|mp4|webm|avi|mkv|flv|mov)$', 'URL必须是有效的视频链接格式']
               - label: 备用源
                 name: alternatives
                 widget: list
                 required: false
-                field: { label: 备用源, name: alt, widget: object, fields: [{ label: 名称, name: name, widget: string }, { label: URL, name: url, widget: string }] }
+                allow_add: true
+                collapsed: false
+                summary: '{{fields.name}}'
+                field:
+                  label: 备用源
+                  name: alt
+                  widget: object
+                  fields:
+                    - label: 名称
+                      name: name
+                      widget: string
+                      hint: "备用源显示名称，如：备用源1、低清源等"
+                    - label: URL
+                      name: url
+                      widget: string
+                      hint: "备用视频链接"
+                      pattern: ['^https?://.+\.(m3u8|mp4|webm|avi|mkv|flv|mov)(\?.*)?$|^https?://.*\.(m3u8|mp4|webm|avi|mkv|flv|mov)$', 'URL必须是有效的视频链接格式']
           - label: 连续剧
             name: series
             widget: object
             fields:
-              - label: 集数
+              - label: 视频标签
+                name: label
+                widget: string
+                required: false
+                default: "连续剧"
+                hint: "自定义显示名称，如：第一季、第二季、特别篇等（最多20个字符）"
+                pattern: ['^.{1,20}$', '标签长度必须在1-20个字符之间']
+              - label: 季
+                name: seasons
+                widget: list
+                required: false
+                allow_add: true
+                collapsed: false
+                summary: '{{fields.season_title}} (第{{fields.season_number}}季)'
+                field:
+                  label: 季
+                  name: season
+                  widget: object
+                  fields:
+                    - label: 季编号
+                      name: season_number
+                      widget: number
+                      value_type: int
+                      min: 1
+                      default: 1
+                      hint: "季的编号，用于排序"
+                    - label: 季标题
+                      name: season_title
+                      widget: string
+                      hint: "季的显示名称，如：第一季、Season 1、特别篇等（最多30个字符）"
+                      pattern: ['^.{1,30}$', '季标题长度必须在1-30个字符之间']
+                    - label: 集数
+                      name: episodes
+                      widget: list
+                      allow_add: true
+                      collapsed: false
+                      summary: '{{fields.number}} - {{fields.title}}'
+                      field:
+                        label: 集
+                        name: episode
+                        widget: object
+                        fields:
+                          - label: 集数标识
+                            name: number
+                            widget: string
+                            hint: "集数显示名称，如：第1集、EP01、试播集等"
+                          - label: 集标题
+                            name: title
+                            widget: string
+                            required: false
+                            hint: "可选的集标题，如：新的开始、最终决战等"
+                          - label: 主源名称
+                            name: name
+                            widget: string
+                            hint: "主源的显示名称"
+                          - label: 主源 URL
+                            name: url
+                            widget: string
+                            hint: "视频链接"
+                            pattern: ['^https?://.+\.(m3u8|mp4|webm|avi|mkv|flv|mov)(\?.*)?$|^https?://.*\.(m3u8|mp4|webm|avi|mkv|flv|mov)$', 'URL必须是有效的视频链接格式']
+                          - label: 备用源
+                            name: alternatives
+                            widget: list
+                            required: false
+                            allow_add: true
+                            collapsed: false
+                            summary: '{{fields.name}}'
+                            field:
+                              label: 备用源
+                              name: alt
+                              widget: object
+                              fields:
+                                - label: 名称
+                                  name: name
+                                  widget: string
+                                - label: URL
+                                  name: url
+                                  widget: string
+                                  pattern: ['^https?://.+\.(m3u8|mp4|webm|avi|mkv|flv|mov)(\?.*)?$|^https?://.*\.(m3u8|mp4|webm|avi|mkv|flv|mov)$', 'URL必须是有效的视频链接格式']
+              - label: 集数（兼容旧格式）
                 name: episodes
                 widget: list
+                required: false
+                allow_add: true
+                collapsed: false
+                summary: '{{fields.number}} - {{fields.title}}'
+                hint: "如果不使用季结构，可以直接在这里添加集数（向后兼容）"
                 field:
                   label: 集
                   name: episode
                   widget: object
                   fields:
-                    - { label: 集数, name: number, widget: string, hint: "例如：第1集、第2集" }
-                    - { label: 主源名称, name: name, widget: string, hint: "主源的显示名称" }
-                    - { label: 主源 URL, name: url, widget: string }
+                    - label: 集数标识
+                      name: number
+                      widget: string
+                      hint: "例如：第1集、第2集"
+                    - label: 集标题
+                      name: title
+                      widget: string
+                      required: false
+                      hint: "可选的集标题"
+                    - label: 主源名称
+                      name: name
+                      widget: string
+                      hint: "主源的显示名称"
+                    - label: 主源 URL
+                      name: url
+                      widget: string
+                      pattern: ['^https?://.+\.(m3u8|mp4|webm|avi|mkv|flv|mov)(\?.*)?$|^https?://.*\.(m3u8|mp4|webm|avi|mkv|flv|mov)$', 'URL必须是有效的视频链接格式']
                     - label: 备用源
                       name: alternatives
                       widget: list
                       required: false
-                      field: { label: 备用源, name: alt, widget: object, fields: [{ label: 名称, name: name, widget: string }, { label: URL, name: url, widget: string }] }
+                      allow_add: true
+                      collapsed: false
+                      summary: '{{fields.name}}'
+                      field:
+                        label: 备用源
+                        name: alt
+                        widget: object
+                        fields:
+                          - label: 名称
+                            name: name
+                            widget: string
+                          - label: URL
+                            name: url
+                            widget: string
+                            pattern: ['^https?://.+\.(m3u8|mp4|webm|avi|mkv|flv|mov)(\?.*)?$|^https?://.*\.(m3u8|mp4|webm|avi|mkv|flv|mov)$', 'URL必须是有效的视频链接格式']
       - { label: 正文, name: body, widget: markdown, required: false }

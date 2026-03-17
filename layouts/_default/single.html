@@ -67,57 +67,27 @@
 
   {{ with .Params.videos }}
   <div class="videos-section">
-    <h2>视频</h2>
-    {{ range . }}
-      {{ if eq .type "movie" }}
-        <!-- Movie type -->
-        <div class="movie-video">
-          <div class="video-sources">
-            <div class="video-player">
-              <iframe src="/player.html?url={{ .url | urlize }}" style="width: 100%; aspect-ratio: 16/9; border: none;" allowfullscreen></iframe>
-            </div>
-            <div class="alternatives">
-              <label>视频源：</label>
-              <button class="alt-source-btn active" data-url="{{ .url }}">{{ .name | default "主源" }}</button>
-              {{ with .alternatives }}
-              {{ range . }}
-              <button class="alt-source-btn" data-url="{{ .url }}">{{ .name }}</button>
-              {{ end }}
-              {{ end }}
-            </div>
-          </div>
-        </div>
-      {{ else if eq .type "series" }}
-        <!-- Series type -->
-        <div class="series-videos">
-          {{ range .episodes }}
-          <div class="episode">
-            <h3>{{ .number }}</h3>
-            <div class="video-sources">
-              <div class="video-player">
-                <iframe src="/player.html?url={{ .url | urlize }}" style="width: 100%; aspect-ratio: 16/9; border: none;" allowfullscreen></iframe>
-              </div>
-              <div class="alternatives">
-                <label>视频源：</label>
-                <button class="alt-source-btn active" data-url="{{ .url }}">{{ .name | default "主源" }}</button>
-                {{ with .alternatives }}
-                {{ range . }}
-                <button class="alt-source-btn" data-url="{{ .url }}">{{ .name }}</button>
-                {{ end }}
-                {{ end }}
-              </div>
-            </div>
-          </div>
-          {{ end }}
-        </div>
-      {{ else }}
-        <!-- Debug: Show what we have -->
-        <div style="background: #333; padding: 1rem; margin: 1rem 0; color: #fff;">
-          <strong>调试信息：</strong><br>
-          视频数据: {{ . | jsonify }}
-        </div>
-      {{ end }}
+    <!-- 动态显示视频标签 -->
+    {{ $firstVideo := index . 0 }}
+    {{ $videoLabel := "视频" }}
+    {{ if $firstVideo.label }}
+      {{ $videoLabel = $firstVideo.label }}
+    {{ else if eq $firstVideo.type "movie" }}
+      {{ $videoLabel = "电影" }}
+    {{ else if eq $firstVideo.type "series" }}
+      {{ $videoLabel = "连续剧" }}
     {{ end }}
+    
+    <h2>{{ $videoLabel }}</h2>
+    
+    <!-- 使用自动选择的播放器 -->
+    {{ partial "video-player/auto.html" (dict "videos" . "containerId" "main-video-player") }}
+    
+    <!-- 加载必要的依赖 -->
+    <link rel="stylesheet" href="{{ "css/video-player-enhanced.css" | relURL }}">
+    <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest" defer></script>
+    <script src="{{ "js/video-player-enhanced.js" | relURL }}" defer></script>
   </div>
   {{ end }}
 
