@@ -13,25 +13,59 @@
   {{ range .AlternativeOutputFormats }}
   <link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ .Permalink }}" title="{{ $.Site.Title }}">
   {{ end }}
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
-  <header>
-    <nav>
-      <a href="{{ "/" | relURL }}" class="site-title">{{ .Site.Title }}</a>
-      <ul>
-        <li><a href="{{ "/" | relURL }}">首页</a></li>
-        <li><a href="{{ "/tags/" | relURL }}">类型</a></li>
-        <li><a href="{{ "/search/" | relURL }}">搜索</a></li>
-      </ul>
-    </nav>
-  </header>
+  <!-- Turnstile 验证层 -->
+  <div id="turnstile-overlay" class="turnstile-overlay">
+    <div class="turnstile-container">
+      <h1>验证访问</h1>
+      <p>请完成验证以继续访问网站</p>
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAACr9iKX3dwPAEufq" data-theme="dark" data-callback="onTurnstileSuccess"></div>
+    </div>
+  </div>
 
-  <main>
-    {{ block "main" . }}{{ end }}
-  </main>
+  <!-- 主要内容（初始隐藏） -->
+  <div id="main-content" class="main-content" style="display: none;">
+    <header>
+      <nav>
+        <a href="{{ "/" | relURL }}" class="site-title">{{ .Site.Title }}</a>
+        <ul>
+          <li><a href="{{ "/" | relURL }}">首页</a></li>
+          <li><a href="{{ "/tags/" | relURL }}">类型</a></li>
+          <li><a href="{{ "/search/" | relURL }}">搜索</a></li>
+        </ul>
+      </nav>
+    </header>
 
-  <footer>
-    <p>&copy; {{ now.Year }} {{ .Site.Title }}. 保留所有权利。</p>
-  </footer>
+    <main>
+      {{ block "main" . }}{{ end }}
+    </main>
+
+    <footer>
+      <p>&copy; {{ now.Year }} {{ .Site.Title }}. 保留所有权利。</p>
+    </footer>
+  </div>
+
+  <script>
+    // Turnstile 验证成功回调
+    function onTurnstileSuccess(token) {
+      // 隐藏验证层
+      document.getElementById('turnstile-overlay').style.display = 'none';
+      // 显示主要内容
+      document.getElementById('main-content').style.display = 'block';
+      // 保存验证状态到 localStorage
+      localStorage.setItem('turnstile-verified', 'true');
+    }
+
+    // 页面加载时检查是否已验证
+    window.addEventListener('load', () => {
+      if (localStorage.getItem('turnstile-verified') === 'true') {
+        // 已验证，直接显示内容
+        document.getElementById('turnstile-overlay').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+      }
+    });
+  </script>
 </body>
 </html>
