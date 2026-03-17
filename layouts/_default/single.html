@@ -54,7 +54,17 @@
         {{ with .Params.tags }}
         <dt>类型</dt>
         <dd>
-          {{ range $i, $v := . }}
+          {{ $allTags := slice }}
+          {{ range . }}
+            {{ if contains . " / " }}
+              {{ range split . " / " }}
+                {{ $allTags = $allTags | append (trim . " ") }}
+              {{ end }}
+            {{ else }}
+              {{ $allTags = $allTags | append (trim . " ") }}
+            {{ end }}
+          {{ end }}
+          {{ range $i, $v := $allTags }}
           {{ if gt $i 0 }}<span class="separator">/</span>{{ end }}
           <a href="{{ "/search/" | relURL }}?q={{ $v | urlize }}" class="meta-link">{{ $v }}</a>
           {{ end }}
