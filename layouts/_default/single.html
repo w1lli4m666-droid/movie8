@@ -72,17 +72,19 @@
       {{ if eq .type "movie" }}
         <!-- Movie type -->
         <div class="movie-video">
-          <div class="video-player">
-            <iframe src="/player.html?url={{ .url | urlize }}" style="width: 100%; aspect-ratio: 16/9; border: none;" allowfullscreen></iframe>
-          </div>
-          <div class="alternatives">
-            <label>视频源：</label>
-            <button class="alt-source-btn active" data-url="{{ .url }}">{{ .name | default "主源" }}</button>
-            {{ with .alternatives }}
-            {{ range . }}
-            <button class="alt-source-btn" data-url="{{ .url }}">{{ .name }}</button>
-            {{ end }}
-            {{ end }}
+          <div class="video-sources">
+            <div class="video-player">
+              <iframe src="/player.html?url={{ .url | urlize }}" style="width: 100%; aspect-ratio: 16/9; border: none;" allowfullscreen></iframe>
+            </div>
+            <div class="alternatives">
+              <label>视频源：</label>
+              <button class="alt-source-btn active" data-url="{{ .url }}">{{ .name | default "主源" }}</button>
+              {{ with .alternatives }}
+              {{ range . }}
+              <button class="alt-source-btn" data-url="{{ .url }}">{{ .name }}</button>
+              {{ end }}
+              {{ end }}
+            </div>
           </div>
         </div>
       {{ else if eq .type "series" }}
