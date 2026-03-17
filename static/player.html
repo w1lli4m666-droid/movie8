@@ -70,9 +70,9 @@
                 transition: all 0.2s ease !important;
             }
             
-            /* 桌面端控制栏调整 - 避免与粗进度条重叠 */
+            /* 桌面端控制栏调整 - 往上移动 */
             .art-controls {
-                padding-top: 12px !important; /* 增加上边距避免重叠 */
+                margin-top: -10px !important; /* 控制栏往上移动 */
             }
         }
         
@@ -161,13 +161,9 @@
                 height: 36px !important;
             }
             
-            /* 移动端进度条优化 - 最小化干扰 */
+            /* 移动端进度条优化 - 最小化干扰，让 ArtPlayer 原生样式生效 */
             .art-progress {
                 height: 4px !important;
-                /* 移除所有可能干扰进度更新的样式 */
-                position: static !important;
-                transform: none !important;
-                transition: none !important;
             }
             
             .art-progress::before {
@@ -177,26 +173,11 @@
             
             .art-progress-hover {
                 height: 4px !important;
-                /* 确保不干扰原生功能 */
-                position: static !important;
-                transform: none !important;
             }
             
             .art-progress-dot {
                 width: 14px !important;
                 height: 14px !important;
-                /* 确保圆点可以正常移动 */
-                position: relative !important;
-                transform: none !important;
-                transition: none !important;
-            }
-            
-            /* 确保进度条内部元素不被干扰 */
-            .art-progress-loaded,
-            .art-progress-played {
-                position: static !important;
-                transform: none !important;
-                transition: none !important;
             }
             
             /* 隐藏进度条上方的时间提示 */
