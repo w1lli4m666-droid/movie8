@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+        }
+        #artplayer {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+    <div id="artplayer"></div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        let videoUrl = urlParams.get('url');
+        
+        if (videoUrl) {
+            var art = new Artplayer({
+                container: '#artplayer',
+                url: videoUrl,
+                type: 'm3u8',
+                customType: {
+                    m3u8: function(video, url) {
+                        if (Hls.isSupported()) {
+                            const hls = new Hls();
+                            hls.loadSource(url);
+                            hls.attachMedia(video);
+                        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                            video.src = url;
+                        }
+                    }
+                },
+                autoSize: true,
+                fullscreen: true,
+                playbackRate: true,
+                aspectRatio: true,
+                pip: true,
+                setting: true,
+                hotkey: true,
+                autoplay: false,
+                theme: '#e8a020',
+                lang: 'zh-cn',
+            });
+        } else {
+            document.body.innerHTML = '<div style="color: white; text-align: center; padding: 50px;">未提供视频链接</div>';
+        }
+    </script>
+</body>
+</html>
