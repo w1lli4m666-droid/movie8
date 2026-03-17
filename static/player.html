@@ -69,11 +69,6 @@
             .art-control-setting {
                 display: none !important;
             }
-            
-            /* 画中画按钮在小屏幕上隐藏 */
-            .art-control-pip {
-                display: none !important;
-            }
         }
         
         /* 超小屏幕优化 */
@@ -91,9 +86,29 @@
             .art-control-time {
                 font-size: 10px !important;
             }
+        }
+        
+        /* 修复进度条显示问题 */
+        .art-progress {
+            height: 3px !important;
+        }
+        
+        .art-progress-hover {
+            height: 3px !important;
+        }
+        
+        /* 移动端进度条优化 */
+        @media (max-width: 768px) {
+            .art-progress {
+                height: 4px !important;
+            }
             
-            /* 倍速按钮在超小屏幕隐藏 */
-            .art-control-playbackRate {
+            .art-progress-hover {
+                height: 4px !important;
+            }
+            
+            /* 隐藏进度条上方的时间提示 */
+            .art-progress-tip {
                 display: none !important;
             }
         }
@@ -164,8 +179,8 @@
                     setting: !isMobile, // 移动端隐藏设置
                     fullscreen: true,
                     fullscreenWeb: true,
-                    pip: !isMobile, // 移动端隐藏画中画
-                    playbackRate: !isMobile, // 移动端隐藏倍速
+                    pip: true, // 保留画中画功能
+                    playbackRate: true, // 保留播放速度功能
                     autoplay: false,
                     autoPlayback: true,
                     hotkey: true,
@@ -173,17 +188,6 @@
                     lang: 'zh-cn',
                     muted: false,
                     volume: 0.7,
-                    controls: [
-                        {
-                            name: 'play',
-                            position: 'left',
-                            html: '',
-                            tooltip: '播放',
-                            mounted: function() {
-                                // 播放按钮默认存在
-                            }
-                        }
-                    ],
                     contextmenu: isMobile ? [] : [
                         {
                             html: '关于 ArtPlayer',
