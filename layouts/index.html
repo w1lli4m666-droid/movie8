@@ -1,22 +1,26 @@
 {{ define "main" }}
-<section class="grid-list">
-  {{ range site.RegularPages.ByDate.Reverse }}
-  {{ $post := . }}
-  <a href="{{ $post.RelPermalink }}" class="grid-card">
-    {{ if $post.Params.cover }}
-    <img src="{{ $post.Params.cover }}" alt="{{ $post.Title }}" class="grid-cover">
-    {{ else }}
-    <div class="grid-cover grid-cover--placeholder"></div>
-    {{ end }}
-    <div class="grid-overlay">
-      <h2 class="grid-title">{{ $post.Title }}</h2>
-      {{ with $post.Params.rating }}
-      <span class="grid-rating">★ {{ . }}</span>
+<div class="grid-list">
+  {{ $posts := where site.RegularPages "Type" "posts" }}
+  {{ if $posts }}
+    {{ range $posts }}
+    <a href="{{ .Permalink }}" class="grid-card">
+      {{ with .Params.cover }}
+      <img src="{{ . }}" alt="{{ $.Title }}" class="grid-cover">
+      {{ else }}
+      <div class="grid-cover grid-cover--placeholder"></div>
       {{ end }}
-    </div>
-  </a>
+      <div class="grid-overlay">
+        <h2 class="grid-title">{{ .Title }}</h2>
+        {{ with .Params.rating }}
+        <div class="grid-rating">{{ . }} / 10</div>
+        {{ end }}
+      </div>
+    </a>
+    {{ end }}
   {{ else }}
-  <p class="no-posts">暂无文章。</p>
+  <div class="no-posts">
+    <p>暂无文章</p>
+  </div>
   {{ end }}
-</section>
+</div>
 {{ end }}

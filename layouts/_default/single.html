@@ -69,11 +69,25 @@
   <div class="videos-section">
     <h2>视频</h2>
     {{ range . }}
-      {{ if eq .movie nil }}
+      {{ if .movie }}
+        <!-- Movie type -->
+        <div class="movie-video">
+          <div class="video-player">
+            <iframe src="/player.html?url={{ .movie.url | urlize }}" style="width: 100%; aspect-ratio: 16/9; border: none;" allowfullscreen></iframe>
+          </div>
+          {{ with .movie.alternatives }}
+          <div class="alternatives">
+            <label>备用源：</label>
+            {{ range . }}
+            <button class="alt-source-btn" data-url="{{ .url }}">{{ .name }}</button>
+            {{ end }}
+          </div>
+          {{ end }}
+        </div>
+      {{ else if .series }}
         <!-- Series type -->
-        {{ with .series }}
         <div class="series-videos">
-          {{ range .episodes }}
+          {{ range .series.episodes }}
           <div class="episode">
             <h3>{{ .number }}</h3>
             <div class="video-sources">
@@ -92,24 +106,12 @@
           </div>
           {{ end }}
         </div>
-        {{ end }}
       {{ else }}
-        <!-- Movie type -->
-        {{ with .movie }}
-        <div class="movie-video">
-          <div class="video-player">
-            <iframe src="/player.html?url={{ .url | urlize }}" style="width: 100%; aspect-ratio: 16/9; border: none;" allowfullscreen></iframe>
-          </div>
-          {{ with .alternatives }}
-          <div class="alternatives">
-            <label>备用源：</label>
-            {{ range . }}
-            <button class="alt-source-btn" data-url="{{ .url }}">{{ .name }}</button>
-            {{ end }}
-          </div>
-          {{ end }}
+        <!-- Debug: Show what we have -->
+        <div style="background: #333; padding: 1rem; margin: 1rem 0; color: #fff;">
+          <strong>调试信息：</strong><br>
+          视频数据: {{ . | jsonify }}
         </div>
-        {{ end }}
       {{ end }}
     {{ end }}
   </div>
