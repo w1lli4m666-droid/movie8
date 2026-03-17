@@ -1,0 +1,18 @@
+{{ $url := .Get "url" }}
+{{ $ratio := .Get "ratio" | default "16/9" }}
+<div class="video-container">
+  <iframe src="/player.html?url={{ $url }}" style="width: 100%; aspect-ratio: {{ $ratio }}; border: none;" allowfullscreen loading="lazy"></iframe>
+</div>
+<script>
+  // 监听来自 iframe 的消息，动态调整比例
+  window.addEventListener('message', function(e) {
+    if (e.data.type === 'videoRatio') {
+      const iframes = document.querySelectorAll('.video-container iframe');
+      iframes.forEach(iframe => {
+        if (iframe.contentWindow === e.source) {
+          iframe.style.aspectRatio = e.data.ratio;
+        }
+      });
+    }
+  });
+</script>

@@ -12,10 +12,21 @@
             height: 100%;
             overflow: hidden;
             background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         #artplayer {
             width: 100%;
             height: 100%;
+        }
+        /* 确保视频容器自适应 */
+        .art-video-player {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        .art-video {
+            object-fit: contain !important;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
@@ -55,13 +66,13 @@
                     }
                 },
                 // 自动调整大小和比例
-                autoSize: true,
+                autoSize: false,  // 关闭自动调整，使用 CSS 控制
                 autoMini: true,
                 
                 // 比例切换功能
-                aspectRatio: true,
+                aspectRatio: false,  // 关闭固定比例，让视频自适应
                 
-                // 设置面板（包含比例切换选项）
+                // 设置面板
                 setting: true,
                 
                 // 全屏和画中画
@@ -90,41 +101,23 @@
                         },
                     },
                 ],
-                
-                // 视频质量和比例设置
-                settings: [
-                    {
-                        html: '画面比例',
-                        selector: [
-                            {
-                                html: '默认',
-                                value: 'default',
-                            },
-                            {
-                                html: '4:3',
-                                value: '4:3',
-                            },
-                            {
-                                html: '16:9',
-                                value: '16:9',
-                            },
-                            {
-                                html: '填充',
-                                value: 'fill',
-                            },
-                        ],
-                        onSelect: function (item) {
-                            art.aspectRatio = item.value;
-                            return item.html;
-                        },
-                    },
-                ],
-                
-                // 视频适配模式
-                objectFit: 'contain',
             });
             
-            // 监听窗口大小变化，自动调整播放器
+            // 视频加载后调整播放器大小
+            art.on('ready', () => {
+                const video = art.video;
+                const videoRatio = video.videoWidth / video.videoHeight;
+                
+                // 通知父页面视频比例（如果在 iframe 中）
+                if (window.parent !== window) {
+                    window.parent.postMessage({
+                        type: 'videoRatio',
+                        ratio: videoRatio
+                    }, '*');
+                }
+            });
+            
+            // 监听窗口大小变化
             window.addEventListener('resize', () => {
                 art.resize();
             });
