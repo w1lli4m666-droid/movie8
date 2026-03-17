@@ -69,13 +69,13 @@
   <div class="videos-section">
     <h2>视频</h2>
     {{ range . }}
-      {{ if .movie }}
+      {{ if eq .type "movie" }}
         <!-- Movie type -->
         <div class="movie-video">
           <div class="video-player">
-            <iframe src="/player.html?url={{ .movie.url | urlize }}" style="width: 100%; aspect-ratio: 16/9; border: none;" allowfullscreen></iframe>
+            <iframe src="/player.html?url={{ .url | urlize }}" style="width: 100%; aspect-ratio: 16/9; border: none;" allowfullscreen></iframe>
           </div>
-          {{ with .movie.alternatives }}
+          {{ with .alternatives }}
           <div class="alternatives">
             <label>备用源：</label>
             {{ range . }}
@@ -84,10 +84,10 @@
           </div>
           {{ end }}
         </div>
-      {{ else if .series }}
+      {{ else if eq .type "series" }}
         <!-- Series type -->
         <div class="series-videos">
-          {{ range .series.episodes }}
+          {{ range .episodes }}
           <div class="episode">
             <h3>{{ .number }}</h3>
             <div class="video-sources">
