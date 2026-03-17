@@ -1,12 +1,6 @@
 {{/* Giscus 评论组件 */}}
 <section class="comments">
   <h2>评论</h2>
-  
-  {{/* Cloudflare Turnstile Widget */}}
-  <div class="cf-turnstile" data-sitekey="0x4AAAAAACr9iKX3dwPAEufq" data-theme="dark"></div>
-  
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  
   <script src="https://giscus.app/client.js"
     data-repo="{{ .Site.Params.giscus_repo }}"
     data-repo-id="{{ .Site.Params.giscus_repo_id }}"
