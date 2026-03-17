@@ -28,10 +28,21 @@
         let videoUrl = urlParams.get('url');
         
         if (videoUrl) {
+            // 检测视频类型
+            const getVideoType = (url) => {
+                if (url.includes('.m3u8')) return 'm3u8';
+                if (url.includes('.mp4')) return 'mp4';
+                if (url.includes('.webm')) return 'webm';
+                if (url.includes('.ogg')) return 'ogg';
+                return 'auto';
+            };
+            
+            const videoType = getVideoType(videoUrl);
+            
             var art = new Artplayer({
                 container: '#artplayer',
                 url: videoUrl,
-                type: 'm3u8',
+                type: videoType,
                 customType: {
                     m3u8: function(video, url) {
                         if (Hls.isSupported()) {
@@ -43,19 +54,83 @@
                         }
                     }
                 },
+                // 自动调整大小和比例
                 autoSize: true,
-                fullscreen: true,
-                playbackRate: true,
+                autoMini: true,
+                
+                // 比例切换功能
                 aspectRatio: true,
-                pip: true,
+                
+                // 设置面板（包含比例切换选项）
                 setting: true,
-                hotkey: true,
+                
+                // 全屏和画中画
+                fullscreen: true,
+                fullscreenWeb: true,
+                pip: true,
+                
+                // 播放控制
+                playbackRate: true,
                 autoplay: false,
+                autoPlayback: true,
+                
+                // 快捷键
+                hotkey: true,
+                
+                // 主题和语言
                 theme: '#e8a020',
                 lang: 'zh-cn',
+                
+                // 右键菜单
+                contextmenu: [
+                    {
+                        html: '关于 ArtPlayer',
+                        click: function () {
+                            window.open('https://artplayer.org');
+                        },
+                    },
+                ],
+                
+                // 视频质量和比例设置
+                settings: [
+                    {
+                        html: '画面比例',
+                        selector: [
+                            {
+                                html: '默认',
+                                value: 'default',
+                            },
+                            {
+                                html: '4:3',
+                                value: '4:3',
+                            },
+                            {
+                                html: '16:9',
+                                value: '16:9',
+                            },
+                            {
+                                html: '填充',
+                                value: 'fill',
+                            },
+                        ],
+                        onSelect: function (item) {
+                            art.aspectRatio = item.value;
+                            return item.html;
+                        },
+                    },
+                ],
+                
+                // 视频适配模式
+                objectFit: 'contain',
             });
+            
+            // 监听窗口大小变化，自动调整播放器
+            window.addEventListener('resize', () => {
+                art.resize();
+            });
+            
         } else {
-            document.body.innerHTML = '<div style="color: white; text-align: center; padding: 50px;">未提供视频链接</div>';
+            document.body.innerHTML = '<div style="color: white; text-align: center; padding: 50px; font-family: sans-serif;"><h2>未提供视频链接</h2><p>请在 URL 中添加 ?url=视频地址</p></div>';
         }
     </script>
 </body>
