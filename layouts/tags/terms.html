@@ -8,24 +8,25 @@
     
     {{ range .Data.Terms.ByCount }}
       {{ $tagName := .Page.Title }}
+      {{ $count := .Count }}
       {{ if in $tagName " / " }}
         {{ range split $tagName " / " }}
           {{ $trimmedTag := trim . " " }}
           {{ $key := $trimmedTag | urlize }}
           {{ if isset $allTags $key }}
             {{ $current := index $allTags $key }}
-            {{ $allTags = merge $allTags (dict $key (add $current.count $.Count)) }}
+            {{ $allTags = merge $allTags (dict $key (dict "name" $trimmedTag "count" (add $current.count $count))) }}
           {{ else }}
-            {{ $allTags = merge $allTags (dict $key (dict "name" $trimmedTag "count" $.Count)) }}
+            {{ $allTags = merge $allTags (dict $key (dict "name" $trimmedTag "count" $count)) }}
           {{ end }}
         {{ end }}
       {{ else }}
         {{ $key := $tagName | urlize }}
         {{ if isset $allTags $key }}
           {{ $current := index $allTags $key }}
-          {{ $allTags = merge $allTags (dict $key (add $current.count .Count)) }}
+          {{ $allTags = merge $allTags (dict $key (dict "name" $tagName "count" (add $current.count $count))) }}
         {{ else }}
-          {{ $allTags = merge $allTags (dict $key (dict "name" $tagName "count" .Count)) }}
+          {{ $allTags = merge $allTags (dict $key (dict "name" $tagName "count" $count)) }}
         {{ end }}
       {{ end }}
     {{ end }}
