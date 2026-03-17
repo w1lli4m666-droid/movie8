@@ -4,38 +4,11 @@
 
   {{ if .Data.Terms }}
   <div class="tag-grid">
-    {{ $allTags := dict }}
-    
     {{ range .Data.Terms.ByCount }}
-      {{ $tagName := .Page.Title }}
-      {{ $count := .Count }}
-      {{ if in $tagName " / " }}
-        {{ range split $tagName " / " }}
-          {{ $trimmedTag := trim . " " }}
-          {{ $key := $trimmedTag | urlize }}
-          {{ if isset $allTags $key }}
-            {{ $current := index $allTags $key }}
-            {{ $allTags = merge $allTags (dict $key (dict "name" $trimmedTag "count" (add $current.count $count) "url" (printf "/search/?q=%s" ($trimmedTag | urlize)))) }}
-          {{ else }}
-            {{ $allTags = merge $allTags (dict $key (dict "name" $trimmedTag "count" $count "url" (printf "/search/?q=%s" ($trimmedTag | urlize)))) }}
-          {{ end }}
-        {{ end }}
-      {{ else }}
-        {{ $key := $tagName | urlize }}
-        {{ if isset $allTags $key }}
-          {{ $current := index $allTags $key }}
-          {{ $allTags = merge $allTags (dict $key (dict "name" $tagName "count" (add $current.count $count) "url" (printf "/tags/%s/" $key))) }}
-        {{ else }}
-          {{ $allTags = merge $allTags (dict $key (dict "name" $tagName "count" $count "url" (printf "/tags/%s/" $key))) }}
-        {{ end }}
-      {{ end }}
-    {{ end }}
-    
-    {{ range $key, $tag := $allTags }}
-    <a href="{{ $tag.url }}" class="tag-card">
+    <a href="{{ .Page.RelPermalink }}" class="tag-card">
       <div class="tag-card-content">
-        <h3 class="tag-card-title">{{ $tag.name }}</h3>
-        <span class="tag-card-count">{{ $tag.count }} 部</span>
+        <h3 class="tag-card-title">{{ .Page.Title }}</h3>
+        <span class="tag-card-count">{{ .Count }} 部</span>
       </div>
     </a>
     {{ end }}
