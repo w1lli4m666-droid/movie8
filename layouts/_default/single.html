@@ -56,12 +56,13 @@
         <dd>
           {{ $allTags := slice }}
           {{ range . }}
-            {{ if contains . " / " }}
-              {{ range split . " / " }}
+            {{ $tag := . }}
+            {{ if in $tag " / " }}
+              {{ range split $tag " / " }}
                 {{ $allTags = $allTags | append (trim . " ") }}
               {{ end }}
             {{ else }}
-              {{ $allTags = $allTags | append (trim . " ") }}
+              {{ $allTags = $allTags | append (trim $tag " ") }}
             {{ end }}
           {{ end }}
           {{ range $i, $v := $allTags }}
