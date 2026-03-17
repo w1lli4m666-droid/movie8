@@ -38,8 +38,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         let videoUrl = urlParams.get('url');
         
-        console.log('Player.html loaded, video URL:', videoUrl);
-        
         if (videoUrl) {
             // 检测视频类型
             const getVideoType = (url) => {
@@ -51,7 +49,6 @@
             };
             
             const videoType = getVideoType(videoUrl);
-            console.log('Detected video type:', videoType);
             
             try {
                 var art = new Artplayer({
@@ -60,7 +57,6 @@
                     type: videoType,
                     customType: {
                         m3u8: function(video, url) {
-                            console.log('Loading m3u8 video:', url);
                             if (Hls.isSupported()) {
                                 const hls = new Hls({
                                     debug: false,
@@ -71,60 +67,38 @@
                                 hls.attachMedia(video);
                                 
                                 hls.on(Hls.Events.ERROR, function (event, data) {
-                                    console.error('HLS Error:', data);
                                     if (data.fatal) {
                                         switch(data.type) {
                                             case Hls.ErrorTypes.NETWORK_ERROR:
-                                                console.log('Network error, trying to recover...');
                                                 hls.startLoad();
                                                 break;
                                             case Hls.ErrorTypes.MEDIA_ERROR:
-                                                console.log('Media error, trying to recover...');
                                                 hls.recoverMediaError();
                                                 break;
                                             default:
-                                                console.log('Fatal error, destroying HLS...');
                                                 hls.destroy();
                                                 break;
                                         }
                                     }
                                 });
                             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                                console.log('Using native HLS support');
                                 video.src = url;
-                            } else {
-                                console.error('HLS not supported');
                             }
                         }
                     },
-                    // 自动调整大小和比例
                     autoSize: false,
                     autoMini: true,
-                    
-                    // 比例切换功能
                     aspectRatio: false,
-                    
-                    // 设置面板
                     setting: true,
-                    
-                    // 全屏和画中画
                     fullscreen: true,
                     fullscreenWeb: true,
                     pip: true,
-                    
-                    // 播放控制
                     playbackRate: true,
                     autoplay: false,
                     autoPlayback: true,
-                    
-                    // 快捷键
                     hotkey: true,
-                    
-                    // 主题和语言
                     theme: '#e8a020',
                     lang: 'zh-cn',
-                    
-                    // 右键菜单
                     contextmenu: [
                         {
                             html: '关于 ArtPlayer',
@@ -135,9 +109,8 @@
                     ],
                 });
                 
-                // 添加事件监听
+                // 视频加载后调整播放器大小
                 art.on('ready', () => {
-                    console.log('ArtPlayer ready');
                     const video = art.video;
                     const videoRatio = video.videoWidth / video.videoHeight;
                     
@@ -150,34 +123,11 @@
                     }
                 });
                 
-                art.on('error', (error) => {
-                    console.error('ArtPlayer error:', error);
-                });
-                
-                art.on('video:loadstart', () => {
-                    console.log('Video load started');
-                });
-                
-                art.on('video:canplay', () => {
-                    console.log('Video can play');
-                });
-                
-                art.on('video:error', (error) => {
-                    console.error('Video error:', error);
-                });
-                
-                // 监听窗口大小变化
-                window.addEventListener('resize', () => {
-                    art.resize();
-                });
-                
             } catch (error) {
-                console.error('Failed to initialize ArtPlayer:', error);
                 document.body.innerHTML = '<div style="color: white; text-align: center; padding: 50px; font-family: sans-serif;"><h2>播放器初始化失败</h2><p>错误: ' + error.message + '</p></div>';
             }
             
         } else {
-            console.log('No video URL provided');
             document.body.innerHTML = '<div style="color: white; text-align: center; padding: 50px; font-family: sans-serif;"><h2>未提供视频链接</h2><p>请在 URL 中添加 ?url=视频地址</p></div>';
         }
     </script>
