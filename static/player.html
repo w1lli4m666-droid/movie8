@@ -42,21 +42,30 @@
                 gap: 4px !important;
             }
             
-            /* 进度条容器调整 */
+            /* 进度条容器调整 - 确保可交互 */
             .art-controls-progress {
                 margin: 0 4px !important;
+                height: auto !important;
+                pointer-events: auto !important;
             }
             
             /* 按钮大小调整 */
             .art-control {
-                width: 32px !important;
-                height: 32px !important;
-                min-width: 32px !important;
+                width: 36px !important;
+                height: 36px !important;
+                min-width: 36px !important;
+                pointer-events: auto !important;
+            }
+            
+            /* 播放按钮确保可点击 */
+            .art-control-play {
+                pointer-events: auto !important;
+                z-index: 10 !important;
             }
             
             /* 时间显示调整 */
             .art-control-time {
-                font-size: 11px !important;
+                font-size: 12px !important;
                 min-width: auto !important;
             }
             
@@ -69,42 +78,83 @@
             .art-control-setting {
                 display: none !important;
             }
+            
+            /* 确保播放速度按钮显示 */
+            .art-control-playbackRate {
+                display: flex !important;
+                width: 36px !important;
+                height: 36px !important;
+            }
+            
+            /* 确保画中画按钮显示 */
+            .art-control-pip {
+                display: flex !important;
+                width: 36px !important;
+                height: 36px !important;
+            }
         }
         
         /* 超小屏幕优化 */
         @media (max-width: 480px) {
             .art-controls {
-                padding: 3px 5px !important;
+                padding: 4px 6px !important;
             }
             
             .art-control {
-                width: 28px !important;
-                height: 28px !important;
-                min-width: 28px !important;
+                width: 32px !important;
+                height: 32px !important;
+                min-width: 32px !important;
             }
             
             .art-control-time {
-                font-size: 10px !important;
+                font-size: 11px !important;
+            }
+            
+            .art-control-playbackRate,
+            .art-control-pip {
+                width: 32px !important;
+                height: 32px !important;
             }
         }
         
-        /* 修复进度条显示问题 */
+        /* 进度条优化 - 确保可拖拽 */
         .art-progress {
-            height: 3px !important;
+            height: 4px !important;
+            cursor: pointer !important;
+            pointer-events: auto !important;
         }
         
         .art-progress-hover {
-            height: 3px !important;
+            height: 4px !important;
+            pointer-events: auto !important;
+        }
+        
+        .art-progress-dot {
+            width: 12px !important;
+            height: 12px !important;
+            pointer-events: auto !important;
+            cursor: grab !important;
+        }
+        
+        .art-progress-dot:active {
+            cursor: grabbing !important;
         }
         
         /* 移动端进度条优化 */
         @media (max-width: 768px) {
             .art-progress {
-                height: 4px !important;
+                height: 6px !important;
+                touch-action: none !important;
             }
             
             .art-progress-hover {
-                height: 4px !important;
+                height: 6px !important;
+            }
+            
+            .art-progress-dot {
+                width: 16px !important;
+                height: 16px !important;
+                touch-action: none !important;
             }
             
             /* 隐藏进度条上方的时间提示 */
@@ -205,9 +255,24 @@
                         art.fullscreen = !art.fullscreen;
                     });
                     
-                    // 移动端单击显示/隐藏控制栏
-                    art.on('click', () => {
-                        art.controls = !art.controls;
+                    // 移动端单击显示/隐藏控制栏 - 但不影响按钮点击
+                    let clickTimer = null;
+                    art.on('click', (event) => {
+                        // 如果点击的是控制栏元素，不处理
+                        if (event.target.closest('.art-controls')) {
+                            return;
+                        }
+                        
+                        // 延迟处理单击，避免与双击冲突
+                        clearTimeout(clickTimer);
+                        clickTimer = setTimeout(() => {
+                            art.controls = !art.controls;
+                        }, 200);
+                    });
+                    
+                    // 双击时清除单击定时器
+                    art.on('dblclick', () => {
+                        clearTimeout(clickTimer);
                     });
                 }
                 
