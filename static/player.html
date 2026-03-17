@@ -28,6 +28,75 @@
         .art-video {
             object-fit: contain !important;
         }
+        
+        /* 移动端控制栏优化 */
+        @media (max-width: 768px) {
+            /* 控制栏响应式调整 */
+            .art-controls {
+                padding: 5px 8px !important;
+            }
+            
+            /* 控制栏按钮间距调整 */
+            .art-controls-left,
+            .art-controls-right {
+                gap: 4px !important;
+            }
+            
+            /* 进度条容器调整 */
+            .art-controls-progress {
+                margin: 0 4px !important;
+            }
+            
+            /* 按钮大小调整 */
+            .art-control {
+                width: 32px !important;
+                height: 32px !important;
+                min-width: 32px !important;
+            }
+            
+            /* 时间显示调整 */
+            .art-control-time {
+                font-size: 11px !important;
+                min-width: auto !important;
+            }
+            
+            /* 音量控制在移动端隐藏 */
+            .art-control-volume {
+                display: none !important;
+            }
+            
+            /* 设置按钮在小屏幕上隐藏 */
+            .art-control-setting {
+                display: none !important;
+            }
+            
+            /* 画中画按钮在小屏幕上隐藏 */
+            .art-control-pip {
+                display: none !important;
+            }
+        }
+        
+        /* 超小屏幕优化 */
+        @media (max-width: 480px) {
+            .art-controls {
+                padding: 3px 5px !important;
+            }
+            
+            .art-control {
+                width: 28px !important;
+                height: 28px !important;
+                min-width: 28px !important;
+            }
+            
+            .art-control-time {
+                font-size: 10px !important;
+            }
+            
+            /* 倍速按钮在超小屏幕隐藏 */
+            .art-control-playbackRate {
+                display: none !important;
+            }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -51,6 +120,9 @@
             const videoType = getVideoType(videoUrl);
             
             try {
+                // 检测是否为移动设备
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+                
                 var art = new Artplayer({
                     container: '#artplayer',
                     url: videoUrl,
@@ -89,17 +161,30 @@
                     autoSize: false,
                     autoMini: true,
                     aspectRatio: false,
-                    setting: true,
+                    setting: !isMobile, // 移动端隐藏设置
                     fullscreen: true,
                     fullscreenWeb: true,
-                    pip: true,
-                    playbackRate: true,
+                    pip: !isMobile, // 移动端隐藏画中画
+                    playbackRate: !isMobile, // 移动端隐藏倍速
                     autoplay: false,
                     autoPlayback: true,
                     hotkey: true,
                     theme: '#e8a020',
                     lang: 'zh-cn',
-                    contextmenu: [
+                    muted: false,
+                    volume: 0.7,
+                    controls: [
+                        {
+                            name: 'play',
+                            position: 'left',
+                            html: '',
+                            tooltip: '播放',
+                            mounted: function() {
+                                // 播放按钮默认存在
+                            }
+                        }
+                    ],
+                    contextmenu: isMobile ? [] : [
                         {
                             html: '关于 ArtPlayer',
                             click: function () {
@@ -108,6 +193,19 @@
                         },
                     ],
                 });
+                
+                // 移动端优化
+                if (isMobile) {
+                    // 移动端双击全屏
+                    art.on('dblclick', () => {
+                        art.fullscreen = !art.fullscreen;
+                    });
+                    
+                    // 移动端单击显示/隐藏控制栏
+                    art.on('click', () => {
+                        art.controls = !art.controls;
+                    });
+                }
                 
                 // 视频加载后调整播放器大小
                 art.on('ready', () => {
