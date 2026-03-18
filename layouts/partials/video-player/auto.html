@@ -20,15 +20,8 @@
   <script>
     (function() {
       const containerId = '{{ $containerId }}';
-      // 使用Hugo模板直接生成JavaScript对象，避免jsonify可能的问题
-      const videoData = {{ if index $videos 0 }}
-        (function() {
-          const data = {{ index $videos 0 | jsonify }};
-          return data;
-        })()
-      {{ else }}
-        null
-      {{ end }};
+      // 直接使用Hugo的jsonify生成JavaScript对象
+      const videoData = {{ index $videos 0 | jsonify | safeJS }};
       const forceMode = '{{ $forceMode }}';
       
       // 检测浏览器支持
