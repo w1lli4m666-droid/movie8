@@ -20,7 +20,15 @@
   <script>
     (function() {
       const containerId = '{{ $containerId }}';
-      const videoData = {{ index $videos 0 | jsonify }};
+      // 使用Hugo模板直接生成JavaScript对象，避免jsonify可能的问题
+      const videoData = {{ if index $videos 0 }}
+        (function() {
+          const data = {{ index $videos 0 | jsonify }};
+          return data;
+        })()
+      {{ else }}
+        null
+      {{ end }};
       const forceMode = '{{ $forceMode }}';
       
       // 检测浏览器支持
@@ -38,7 +46,13 @@
       
       // 检测视频数据复杂度
       function detectVideoComplexity(data) {
-        if (!data) return 'simple';
+        if (!data) {
+          console.error('Video data is null or undefined');
+          return 'simple';
+        }
+        
+        console.log('Video data received:', data);
+        console.log('Video type:', data.type);
         
         if (data.type === 'series') {
           if (data.seasons && data.seasons.length > 1) return 'complex';
@@ -119,11 +133,14 @@
       function initializeLegacyPlayer(container) {
         let html = '<div class="legacy-video-player">';
         
+        console.log('Initializing legacy player for type:', videoData.type);
+        
         if (videoData.type === 'movie') {
           html += generateMoviePlayer(videoData);
         } else if (videoData.type === 'series') {
           html += generateSeriesPlayer(videoData);
         } else {
+          console.error('Unsupported video type:', videoData.type);
           html += '<p>不支持的视频格式</p>';
         }
         
