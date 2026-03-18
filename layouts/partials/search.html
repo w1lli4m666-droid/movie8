@@ -5,14 +5,10 @@
 </style>
 <div id="search"></div>
 <script src="/pagefind/pagefind-ui.js"></script>
-<script src="/pagefind/pagefind.js"></script>
 <script>
-  window.addEventListener('load', async () => {
+  window.addEventListener('load', () => {
     const params = new URLSearchParams(window.location.search);
     const query = params.get('q');
-
-    // 初始化 Pagefind 底层 API
-    await pagefind.init();
 
     const ui = new PagefindUI({
       element: "#search",
@@ -21,70 +17,53 @@
       excerptLength: 0,
     });
 
-    // 用底层 API 搜索并拿 meta，注入到 UI 结果里
-    async function injectSummaries(searchQuery) {
-      if (!searchQuery) return;
-      const results = await pagefind.search(searchQuery);
-      // 建立 url -> summary 的映射
-      const summaryMap = {};
-      for (const result of results.results) {
-        const data = await result.data();
-        if (data.meta && data.meta.summary) {
-          summaryMap[data.url] = data.meta.summary;
-        }
-      }
-
-      // 注入到已渲染的 UI 结果
-      document.querySelectorAll('.pagefind-ui__result:not([data-si])').forEach(function(el) {
-        el.setAttribute('data-si', '1');
-        var anchor = el.querySelector('.pagefind-ui__result-title a');
-        if (!anchor) return;
-        var url = new URL(anchor.href).pathname;
-        var summary = summaryMap[url] || summaryMap[url.replace(/\/$/, '')];
-        if (!summary) return;
-        var excerptEl = el.querySelector('.pagefind-ui__result-excerpt');
-        if (!excerptEl) return;
-        var max = 200;
-        excerptEl.textContent = summary.length > max ? summary.slice(0, max) + '……' : summary;
-        excerptEl.classList.add('has-summary');
-      });
-    }
-
-    // 监听结果渲染
-    var pendingQuery = null;
     var observer = new MutationObserver(function() {
-      if (pendingQuery) injectSummaries(pendingQuery);
+      document.querySelectorAll('.pagefind-ui__result:not([data-si])').forEach(function(result) {
+        result.setAttribute('data-si', '1');
+        var excerptEl = result.querySelector('.pagefind-ui__result-excerpt');
+        if (!excerptEl) return;
+        var anchor = result.querySelector('.pagefind-ui__result-title a');
+        if (!anchor) return;
+        var url = anchor.getAttribute('href');
+        if (!url) return;
+        fetch(url)
+          .then(function(r) { return r.text(); })
+          .then(function(html) {
+            var doc = new DOMParser().parseFromString(html, 'text/html');
+            // 读取 data-pagefind-meta 内联语法的值
+            var metaEl = doc.querySelector('[data-pagefind-meta^="summary:"]');
+            var summary = '';
+            if (metaEl) {
+              var attr = metaEl.getAttribute('data-pagefind-meta');
+              summary = attr.replace(/^summary:/, '').trim();
+            }
+            if (summary) {
+              var max = 200;
+              excerptEl.textContent = summary.length > max ? summary.slice(0, max) + '……' : summary;
+              excerptEl.classList.add('has-summary');
+            }
+          })
+          .catch(function() {});
+      });
     });
     observer.observe(document.getElementById('search'), { childList: true, subtree: true });
 
-    // 监听搜索框输入
-    var inputTimer = null;
-    document.getElementById('search').addEventListener('input', function(e) {
-      if (e.target.classList.contains('pagefind-ui__search-input')) {
-        clearTimeout(inputTimer);
-        var q = e.target.value.trim();
-        pendingQuery = q;
-        inputTimer = setTimeout(function() { injectSummaries(q); }, 400);
-      }
-    }, true);
-
     if (query) {
-      const decodedQuery = decodeURIComponent(query);
-      pendingQuery = decodedQuery;
-      const checkInterval = setInterval(() => {
-        const searchInput = document.querySelector('.pagefind-ui__search-input');
+      var decodedQuery = decodeURIComponent(query);
+      var checkInterval = setInterval(function() {
+        var searchInput = document.querySelector('.pagefind-ui__search-input');
         if (searchInput) {
           clearInterval(checkInterval);
           searchInput.value = decodedQuery;
           searchInput.dispatchEvent(new Event('input', { bubbles: true }));
           searchInput.dispatchEvent(new Event('change', { bubbles: true }));
-          setTimeout(() => {
-            const btn = document.querySelector('.pagefind-ui__search-input-button');
+          setTimeout(function() {
+            var btn = document.querySelector('.pagefind-ui__search-input-button');
             if (btn) btn.click();
           }, 50);
         }
       }, 50);
-      setTimeout(() => clearInterval(checkInterval), 3000);
+      setTimeout(function() { clearInterval(checkInterval); }, 3000);
     }
   });
 </script>
