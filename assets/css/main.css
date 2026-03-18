@@ -504,6 +504,18 @@ main {
   color: #111;
 }
 
+/* ===== Summary ===== */
+.post-summary {
+  background-color: #1a1a1a;
+  border: 1px solid #2e2e2e;
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  margin-top: 2rem;
+  color: #bbb;
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
 /* ===== Comments ===== */
 .comments {
   margin-top: 3rem;

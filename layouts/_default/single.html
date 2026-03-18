@@ -102,6 +102,12 @@
   <div class="post-content">
     {{ .Content }}
   </div>
+
+  {{ with .Params.summary }}
+  <div class="post-summary">
+    <p>{{ . }}</p>
+  </div>
+  {{ end }}
 </article>
 
 {{ partial "comments.html" . }}
