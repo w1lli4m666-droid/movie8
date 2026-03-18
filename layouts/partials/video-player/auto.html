@@ -21,7 +21,7 @@
     (function() {
       const containerId = '{{ $containerId }}';
       // 直接使用Hugo的jsonify生成JavaScript对象
-      const videoData = {{ index $videos 0 | jsonify | safeJS }};
+      const videoData = {{ if index $videos 0 }}{{ index $videos 0 | jsonify | safeJS }}{{ else }}null{{ end }};
       const forceMode = '{{ $forceMode }}';
       
       // 检测浏览器支持

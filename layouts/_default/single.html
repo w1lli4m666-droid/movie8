@@ -80,14 +80,14 @@
     
     <h2>{{ $videoLabel }}</h2>
     
-    <!-- 使用自动选择的播放器 -->
-    {{ partial "video-player/auto.html" (dict "videos" . "containerId" "main-video-player") }}
-    
     <!-- 加载必要的依赖 -->
     <link rel="stylesheet" href="{{ "css/video-player-enhanced.css" | relURL }}">
-    <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest" defer></script>
-    <script src="{{ "js/video-player-enhanced.js" | relURL }}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="{{ "js/video-player-enhanced.js" | relURL }}"></script>
+    
+    <!-- 使用自动选择的播放器 -->
+    {{ partial "video-player/auto.html" (dict "videos" . "containerId" "main-video-player") }}
   </div>
   {{ end }}
 
