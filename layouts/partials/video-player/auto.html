@@ -68,7 +68,7 @@
 
   function selectEpisode(episode, cardEl) {
     currentEpisode = episode;
-    // 更新 active 卡片
+    // 更新 active 卡片（跨所有面板）
     var allCards = document.querySelectorAll('#' + episodeNavId + ' .vp-ep-card');
     allCards.forEach(function(c) { c.classList.remove('active'); });
     if (cardEl) cardEl.classList.add('active');
@@ -81,15 +81,29 @@
   function buildSeriesNav(seasons) {
     var nav = document.getElementById(episodeNavId);
     nav.innerHTML = '';
-    seasons.forEach(function(season) {
-      var seasonDiv = document.createElement('div');
-      seasonDiv.className = 'vp-season';
-      var title = document.createElement('div');
-      title.className = 'vp-season-title';
-      title.textContent = season.season_title || ('第' + season.season_number + '季');
-      seasonDiv.appendChild(title);
+
+    // 季标签行
+    var tabsRow = document.createElement('div');
+    tabsRow.className = 'vp-season-tabs';
+
+    // 集数面板容器
+    var panels = [];
+
+    seasons.forEach(function(season, si) {
+      var label = season.season_title || ('第' + season.season_number + '季');
+
+      // 标签
+      var tab = document.createElement('div');
+      tab.className = 'vp-season-tab' + (si === 0 ? ' active' : '');
+      tab.textContent = label;
+
+      // 面板
+      var panel = document.createElement('div');
+      panel.className = 'vp-season-panel' + (si === 0 ? ' active' : '');
+
       var grid = document.createElement('div');
       grid.className = 'vp-ep-grid';
+
       (season.episodes || []).forEach(function(ep) {
         var card = document.createElement('div');
         card.className = 'vp-ep-card';
@@ -106,9 +120,25 @@
         card.addEventListener('click', function() { selectEpisode(ep, card); });
         grid.appendChild(card);
       });
-      seasonDiv.appendChild(grid);
-      nav.appendChild(seasonDiv);
+
+      panel.appendChild(grid);
+      panels.push({ tab: tab, panel: panel });
+
+      // 切换季
+      tab.addEventListener('click', function() {
+        panels.forEach(function(p) {
+          p.tab.classList.remove('active');
+          p.panel.classList.remove('active');
+        });
+        tab.classList.add('active');
+        panel.classList.add('active');
+      });
+
+      tabsRow.appendChild(tab);
     });
+
+    nav.appendChild(tabsRow);
+    panels.forEach(function(p) { nav.appendChild(p.panel); });
   }
 
   function buildMoviePlayer(d) {
