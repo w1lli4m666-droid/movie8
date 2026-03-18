@@ -1,319 +1,152 @@
 {{/*
-  自动选择视频播放器组件
-  根据浏览器支持和视频数据格式自动选择最佳播放器
-  参数：
-  - .videos: 视频数据数组
-  - .containerId: 播放器容器ID（可选）
-  - .forceMode: 强制使用的模式 "enhanced" 或 "legacy"（可选）
+  视频播放器 - 单窗口 + 集数卡片导航
+  支持电影（单源/多源）和电视剧（季/集分层卡片）
 */}}
-
 {{ $videos := .videos }}
 {{ $containerId := .containerId | default "auto-video-player" }}
-{{ $forceMode := .forceMode }}
 
 {{ if $videos }}
-<div class="auto-video-player-wrapper">
-  <!-- 播放器容器 -->
-  <div id="{{ $containerId }}" class="video-container"></div>
-  
-  <!-- 播放器选择和初始化脚本 -->
-  <script>
-    (function() {
-      const containerId = '{{ $containerId }}';
-      // 直接使用Hugo的jsonify生成JavaScript对象
-      const videoData = {{ if index $videos 0 }}{{ index $videos 0 | jsonify | safeJS }}{{ else }}null{{ end }};
-      const forceMode = '{{ $forceMode }}';
-      
-      // 检测浏览器支持
-      function detectBrowserSupport() {
-        const support = {
-          es6: typeof Symbol !== 'undefined',
-          localStorage: typeof Storage !== 'undefined',
-          fetch: typeof fetch !== 'undefined',
-          artPlayer: typeof Artplayer !== 'undefined',
-          hls: typeof Hls !== 'undefined'
-        };
-        
-        return support;
-      }
-      
-      // 检测视频数据复杂度
-      function detectVideoComplexity(data) {
-        if (!data) {
-          console.error('Video data is null or undefined');
-          return 'simple';
-        }
-        
-        console.log('Video data received:', data);
-        console.log('Video type:', data.type);
-        
-        if (data.type === 'series') {
-          if (data.seasons && data.seasons.length > 1) return 'complex';
-          if (data.episodes && data.episodes.length > 3) return 'medium';
-        }
-        
-        return 'simple';
-      }
-      
-      // 选择播放器模式
-      function selectPlayerMode() {
-        if (forceMode) return forceMode;
-        
-        const support = detectBrowserSupport();
-        const complexity = detectVideoComplexity(videoData);
-        
-        // 如果浏览器不支持现代特性，使用传统播放器
-        if (!support.es6 || !support.localStorage) {
-          return 'legacy';
-        }
-        
-        // 如果视频数据复杂，优先使用增强版播放器
-        if (complexity === 'complex' || complexity === 'medium') {
-          return 'enhanced';
-        }
-        
-        // 默认使用增强版播放器
-        return 'enhanced';
-      }
-      
-      // 初始化播放器
-      function initializePlayer() {
-        const mode = selectPlayerMode();
-        const container = document.getElementById(containerId);
-        
-        if (!container) {
-          console.error('Video container not found:', containerId);
-          return;
-        }
-        
-        console.log('Initializing video player in', mode, 'mode');
-        
-        if (mode === 'enhanced') {
-          initializeEnhancedPlayer(container);
-        } else {
-          initializeLegacyPlayer(container);
-        }
-      }
-      
-      // 初始化增强版播放器
-      function initializeEnhancedPlayer(container) {
-        // 检查依赖
-        if (typeof VideoPlayerSystem === 'undefined') {
-          console.warn('Enhanced player not available, falling back to legacy');
-          initializeLegacyPlayer(container);
-          return;
-        }
-        
-        try {
-          const player = new VideoPlayerSystem(containerId, videoData, {
-            autoplay: false,
-            volume: 0.7,
-            enableProgressManager: true
-          });
-          
-          // 保存播放器实例
-          window.videoPlayer = player;
-          
-          console.log('Enhanced video player initialized successfully');
-          
-        } catch (error) {
-          console.error('Enhanced player initialization failed:', error);
-          initializeLegacyPlayer(container);
-        }
-      }
-      
-      // 初始化传统播放器
-      function initializeLegacyPlayer(container) {
-        let html = '<div class="legacy-video-player">';
-        
-        console.log('Initializing legacy player for type:', videoData.type);
-        
-        if (videoData.type === 'movie') {
-          html += generateMoviePlayer(videoData);
-        } else if (videoData.type === 'series') {
-          html += generateSeriesPlayer(videoData);
-        } else {
-          console.error('Unsupported video type:', videoData.type);
-          html += '<p>不支持的视频格式</p>';
-        }
-        
-        html += '</div>';
-        container.innerHTML = html;
-        
-        // 初始化传统播放器的事件处理
-        initializeLegacyEvents(container);
-        
-        console.log('Legacy video player initialized');
-      }
-      
-      // 生成电影播放器HTML
-      function generateMoviePlayer(data) {
-        const label = data.label || '电影';
-        const mainSource = data.name || '主源';
-        
-        let html = `
-          <div class="movie-video">
-            <h3>${label}</h3>
-            <div class="video-sources">
-              <div class="video-player">
-                <iframe src="/player.html?url=${encodeURIComponent(data.url)}" 
-                        style="width: 100%; aspect-ratio: 16/9; border: none;" 
-                        allowfullscreen></iframe>
-              </div>
-              <div class="alternatives">
-                <label>视频源：</label>
-                <button class="alt-source-btn active" data-url="${data.url}">${mainSource}</button>
-        `;
-        
-        if (data.alternatives) {
-          data.alternatives.forEach(alt => {
-            html += `<button class="alt-source-btn" data-url="${alt.url}">${alt.name}</button>`;
-          });
-        }
-        
-        html += '</div></div></div>';
-        return html;
-      }
-      
-      // 生成电视剧播放器HTML
-      function generateSeriesPlayer(data) {
-        const label = data.label || '连续剧';
-        let html = `<div class="series-videos"><h3>${label}</h3>`;
-        
-        if (data.seasons) {
-          // 新格式：多季
-          data.seasons.forEach(season => {
-            const seasonTitle = season.season_title || `第${season.season_number}季`;
-            html += `<div class="season-group"><h4>${seasonTitle}</h4>`;
-            
-            season.episodes.forEach(episode => {
-              html += generateEpisodePlayer(episode);
-            });
-            
-            html += '</div>';
-          });
-        } else if (data.episodes) {
-          // 旧格式：单季
-          data.episodes.forEach(episode => {
-            html += generateEpisodePlayer(episode);
-          });
-        }
-        
-        html += '</div>';
-        return html;
-      }
-      
-      // 生成单集播放器HTML
-      function generateEpisodePlayer(episode) {
-        const title = episode.number + (episode.title ? ': ' + episode.title : '');
-        const mainSource = episode.name || '主源';
-        
-        let html = `
-          <div class="episode">
-            <h5>${title}</h5>
-            <div class="video-sources">
-              <div class="video-player">
-                <iframe src="/player.html?url=${encodeURIComponent(episode.url)}" 
-                        style="width: 100%; aspect-ratio: 16/9; border: none;" 
-                        allowfullscreen></iframe>
-              </div>
-              <div class="alternatives">
-                <label>视频源：</label>
-                <button class="alt-source-btn active" data-url="${episode.url}">${mainSource}</button>
-        `;
-        
-        if (episode.alternatives) {
-          episode.alternatives.forEach(alt => {
-            html += `<button class="alt-source-btn" data-url="${alt.url}">${alt.name}</button>`;
-          });
-        }
-        
-        html += '</div></div></div>';
-        return html;
-      }
-      
-      // 初始化传统播放器事件
-      function initializeLegacyEvents(container) {
-        const buttons = container.querySelectorAll('.alt-source-btn');
-        
-        buttons.forEach(btn => {
-          btn.addEventListener('click', function() {
-            const newUrl = this.getAttribute('data-url');
-            const videoContainer = this.closest('.video-sources');
-            
-            if (!videoContainer) return;
-            
-            const iframe = videoContainer.querySelector('iframe');
-            
-            if (iframe && newUrl) {
-              iframe.src = '/player.html?url=' + encodeURIComponent(newUrl);
-              
-              // 更新按钮状态
-              const siblingBtns = this.parentElement.querySelectorAll('.alt-source-btn');
-              siblingBtns.forEach(b => b.classList.remove('active'));
-              this.classList.add('active');
-            }
-          });
-        });
-      }
-      
-      // 等待DOM加载完成后初始化
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializePlayer);
-      } else {
-        initializePlayer();
-      }
-    })();
-  </script>
-  
-  <!-- 样式 -->
-  <style>
-    .auto-video-player-wrapper {
-      margin: 20px 0;
-    }
-    
-    .video-container {
-      min-height: 200px;
-    }
-    
-    .legacy-video-player .movie-video,
-    .legacy-video-player .series-videos {
-      margin-bottom: 20px;
-    }
-    
-    .legacy-video-player .season-group {
-      margin-bottom: 15px;
-    }
-    
-    .legacy-video-player .episode {
-      margin-bottom: 15px;
-    }
-    
-    .legacy-video-player .alternatives {
-      margin-top: 10px;
-      padding: 10px;
-      background: #f5f5f5;
-      border-radius: 4px;
-    }
-    
-    .legacy-video-player .alt-source-btn {
-      margin: 0 5px 5px 0;
-      padding: 5px 10px;
-      border: 1px solid #ddd;
-      background: white;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    
-    .legacy-video-player .alt-source-btn.active {
-      background: #e8a020;
-      color: white;
-      border-color: #e8a020;
-    }
-    
-    .legacy-video-player .alt-source-btn:hover {
-      border-color: #ccc;
-    }
-  </style>
+{{ $data := index $videos 0 }}
+<div class="vp-wrapper" id="{{ $containerId }}-root">
+
+  <!-- 播放器主窗口 -->
+  <div class="vp-player-box">
+    <iframe id="{{ $containerId }}-iframe"
+            src=""
+            style="width:100%;aspect-ratio:16/9;border:none;display:block;background:#000;"
+            allowfullscreen></iframe>
+  </div>
+
+  <!-- 视频源选择栏 -->
+  <div class="vp-source-bar" id="{{ $containerId }}-source-bar">
+    <label for="{{ $containerId }}-source-select">视频源：</label>
+    <select id="{{ $containerId }}-source-select"></select>
+  </div>
+
+  <!-- 集数导航（电视剧） -->
+  <div class="vp-episode-nav" id="{{ $containerId }}-episode-nav"></div>
+
 </div>
+
+<script>
+(function() {
+  var rootId = '{{ $containerId }}-root';
+  var iframeId = '{{ $containerId }}-iframe';
+  var sourceBarId = '{{ $containerId }}-source-bar';
+  var sourceSelectId = '{{ $containerId }}-source-select';
+  var episodeNavId = '{{ $containerId }}-episode-nav';
+  var playerBase = '/player.html?url=';
+
+  var data = {{ $data | jsonify | safeJS }};
+
+  // 当前选中的集数据（含 alternatives）
+  var currentEpisode = null;
+
+  function setIframeSrc(url) {
+    document.getElementById(iframeId).src = playerBase + encodeURIComponent(url);
+  }
+
+  function buildSourceSelect(episode) {
+    var sel = document.getElementById(sourceSelectId);
+    sel.innerHTML = '';
+    var sources = [{ name: episode.name || '主源', url: episode.url }];
+    if (episode.alternatives) {
+      episode.alternatives.forEach(function(a) {
+        sources.push({ name: a.name, url: a.url });
+      });
+    }
+    sources.forEach(function(s, i) {
+      var opt = document.createElement('option');
+      opt.value = s.url;
+      opt.textContent = s.name;
+      sel.appendChild(opt);
+    });
+    sel.onchange = function() { setIframeSrc(this.value); };
+    // 显示源栏（多源时才有意义，但始终显示方便用户知道当前源）
+    document.getElementById(sourceBarId).style.display = sources.length > 0 ? 'flex' : 'none';
+  }
+
+  function selectEpisode(episode, cardEl) {
+    currentEpisode = episode;
+    // 更新 active 卡片
+    var allCards = document.querySelectorAll('#' + episodeNavId + ' .vp-ep-card');
+    allCards.forEach(function(c) { c.classList.remove('active'); });
+    if (cardEl) cardEl.classList.add('active');
+    // 更新源选择栏
+    buildSourceSelect(episode);
+    // 加载第一个源
+    setIframeSrc(episode.url);
+  }
+
+  function buildSeriesNav(seasons) {
+    var nav = document.getElementById(episodeNavId);
+    nav.innerHTML = '';
+    seasons.forEach(function(season) {
+      var seasonDiv = document.createElement('div');
+      seasonDiv.className = 'vp-season';
+      var title = document.createElement('div');
+      title.className = 'vp-season-title';
+      title.textContent = season.season_title || ('第' + season.season_number + '季');
+      seasonDiv.appendChild(title);
+      var grid = document.createElement('div');
+      grid.className = 'vp-ep-grid';
+      (season.episodes || []).forEach(function(ep) {
+        var card = document.createElement('div');
+        card.className = 'vp-ep-card';
+        var num = document.createElement('span');
+        num.className = 'vp-ep-num';
+        num.textContent = ep.number;
+        card.appendChild(num);
+        if (ep.title) {
+          var t = document.createElement('span');
+          t.className = 'vp-ep-title';
+          t.textContent = ep.title;
+          card.appendChild(t);
+        }
+        card.addEventListener('click', function() { selectEpisode(ep, card); });
+        grid.appendChild(card);
+      });
+      seasonDiv.appendChild(grid);
+      nav.appendChild(seasonDiv);
+    });
+  }
+
+  function buildMoviePlayer(d) {
+    // 电影：隐藏集数导航，直接加载
+    document.getElementById(episodeNavId).style.display = 'none';
+    var ep = { name: d.name || '主源', url: d.url, alternatives: d.alternatives };
+    buildSourceSelect(ep);
+    setIframeSrc(d.url);
+  }
+
+  function init() {
+    if (!data) return;
+    if (data.type === 'series') {
+      if (data.seasons && data.seasons.length > 0) {
+        buildSeriesNav(data.seasons);
+        // 默认选中第一集
+        var firstEp = data.seasons[0].episodes && data.seasons[0].episodes[0];
+        if (firstEp) {
+          var firstCard = document.querySelector('#' + episodeNavId + ' .vp-ep-card');
+          selectEpisode(firstEp, firstCard);
+        }
+      } else if (data.episodes && data.episodes.length > 0) {
+        // 兼容无 seasons 的旧格式
+        buildSeriesNav([{ season_number: 1, season_title: '第一季', episodes: data.episodes }]);
+        var firstEp = data.episodes[0];
+        var firstCard = document.querySelector('#' + episodeNavId + ' .vp-ep-card');
+        selectEpisode(firstEp, firstCard);
+      }
+    } else {
+      buildMoviePlayer(data);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
 {{ end }}
