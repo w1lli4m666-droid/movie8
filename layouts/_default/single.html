@@ -5,7 +5,7 @@
     <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006年01月02日" }}</time>
 
     {{ with .Params.summary }}
-    <div data-pagefind-meta="summary" style="display:none">{{ . }}</div>
+    <div data-summary style="display:none">{{ . }}</div>
     {{ end }}
 
     {{ with .Params.cover }}

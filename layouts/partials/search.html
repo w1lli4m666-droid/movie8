@@ -1,4 +1,9 @@
 <link href="/pagefind/pagefind-ui.css" rel="stylesheet">
+<style>
+  /* 隐藏 Pagefind 默认 excerpt，只显示我们注入的 summary */
+  .pagefind-ui__result-excerpt { display: none; }
+  .pagefind-ui__result-excerpt.has-summary { display: block; }
+</style>
 <div id="search"></div>
 <script src="/pagefind/pagefind-ui.js"></script>
 <script>
@@ -10,23 +15,13 @@
       element: "#search",
       showSubResults: false,
       showImages: false,
-      excerptLength: 0,
     });
 
-    // MutationObserver 监听结果渲染，注入 summary
     var observer = new MutationObserver(function() {
       document.querySelectorAll('.pagefind-ui__result:not([data-si])').forEach(function(result) {
         result.setAttribute('data-si', '1');
         var excerptEl = result.querySelector('.pagefind-ui__result-excerpt');
         if (!excerptEl) return;
-        // summary 被 pagefind 索引后会出现在 excerpt 的 mark 标签附近
-        // 更可靠：直接读隐藏的 meta 元素（pagefind 会把 meta 内容注入到结果 DOM 的 data 属性）
-        var summaryAttr = result.getAttribute('data-pagefind-meta-summary');
-        if (summaryAttr) {
-          applyExcerpt(excerptEl, summaryAttr);
-          return;
-        }
-        // fallback：从结果链接 fetch pagefind fragment
         var anchor = result.querySelector('.pagefind-ui__result-title a');
         if (!anchor) return;
         var url = anchor.getAttribute('href');
@@ -35,19 +30,18 @@
           .then(r => r.text())
           .then(html => {
             var doc = new DOMParser().parseFromString(html, 'text/html');
-            var el = doc.querySelector('[data-pagefind-meta="summary"]');
-            if (el) applyExcerpt(excerptEl, el.textContent.trim());
+            var el = doc.querySelector('[data-summary]');
+            if (el && el.textContent.trim()) {
+              var text = el.textContent.trim();
+              var max = 120;
+              excerptEl.textContent = text.length > max ? text.slice(0, max) + '……' : text;
+              excerptEl.classList.add('has-summary');
+            }
           })
           .catch(() => {});
       });
     });
     observer.observe(document.getElementById('search'), { childList: true, subtree: true });
-
-    function applyExcerpt(el, text) {
-      if (!text) return;
-      var max = 120;
-      el.textContent = text.length > max ? text.slice(0, max) + '……' : text;
-    }
 
     if (query) {
       const decodedQuery = decodeURIComponent(query);
