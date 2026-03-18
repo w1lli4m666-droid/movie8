@@ -1,8 +1,8 @@
 <link href="/pagefind/pagefind-ui.css" rel="stylesheet">
 <style>
-  /* 隐藏 Pagefind 默认 excerpt，只显示我们注入的 summary */
-  .pagefind-ui__result-excerpt { display: none; }
-  .pagefind-ui__result-excerpt.has-summary { display: block; }
+  /* 隐藏 Pagefind 默认 excerpt */
+  .pagefind-ui__result-excerpt { display: none !important; }
+  .pagefind-ui__result-excerpt.has-summary { display: block !important; }
 </style>
 <div id="search"></div>
 <script src="/pagefind/pagefind-ui.js"></script>
@@ -33,7 +33,7 @@
             var el = doc.querySelector('[data-summary]');
             if (el && el.textContent.trim()) {
               var text = el.textContent.trim();
-              var max = 120;
+              var max = 200;
               excerptEl.textContent = text.length > max ? text.slice(0, max) + '……' : text;
               excerptEl.classList.add('has-summary');
             }
