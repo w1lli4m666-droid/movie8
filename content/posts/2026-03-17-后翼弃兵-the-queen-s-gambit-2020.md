@@ -19,37 +19,37 @@ videos:
         season_title: 第一季
         episodes:
           - number: 第1集
-            title: 开局
+            title: 开局 Openings
             name: 高清
             url: https://json.ksdiy.cn/Vtche/BF/1631354252.m3u8
             alternatives: []
           - number: 第2集
-            title: 开放
+            title: 兑子 Exchanges
             name: 高清
             url: https://json.ksdiy.cn/Vtche/BF/3806655430.m3u8
             alternatives: []
           - number: 第3集
-            title: 兵
+            title: 叠兵 Doubled Pawns
             name: 高清
             url: https://json.ksdiy.cn/Vtche/BF/3776011995.m3u8
             alternatives: []
           - number: 第4集
-            title: 防御
+            title: 中局 Middle Game
             name: 高清
             url: https://json.ksdiy.cn/Vtche/BF/4035473620.m3u8
             alternatives: []
           - number: 第5集
-            title: 将军
+            title: 捉双 Fork
             name: 高清
             url: https://json.ksdiy.cn/Vtche/BF/3336743355.m3u8
             alternatives: []
           - number: 第6集
-            title: 结束
+            title: 封盘 Adjournment
             name: 高清
             url: https://json.ksdiy.cn/Vtche/BF/1410197963.m3u8
             alternatives: []
           - number: 第7集
-            title: 终局
+            title: 残局 End Game
             name: 高清
             url: https://json.ksdiy.cn/Vtche/BF/1967049568.m3u8
             alternatives: []
