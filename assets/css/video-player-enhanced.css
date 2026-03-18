@@ -1353,7 +1353,8 @@
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background: #1a1a1a;
+  border: 1px solid #2e2e2e;
   border-radius: 8px;
   margin-top: 10px;
 }
@@ -1367,10 +1368,10 @@
 
 .vp-source-bar select {
   padding: 6px 28px 6px 12px;
-  border: 1px solid rgba(232,160,32,0.4);
+  border: 1px solid #3a3a3a;
   border-radius: 6px;
   font-size: 13px;
-  background: rgba(255,255,255,0.08);
+  background: #2a2a2a;
   color: #eee;
   cursor: pointer;
   appearance: none;
@@ -1389,7 +1390,7 @@
 }
 
 .vp-source-bar select option {
-  background: #1a1a2e;
+  background: #1a1a1a;
   color: #eee;
 }
 
