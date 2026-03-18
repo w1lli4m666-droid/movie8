@@ -13,33 +13,44 @@ release_year: 2020-10-23(美国)
 rating: 9
 videos:
   - type: series
-    episodes:
-      - number: 第一集
-        name: 高清
-        url: https://json.ksdiy.cn/Vtche/BF/1631354252.m3u8
-        alternatives: []
-      - number: 第二集
-        name: 高清
-        url: https://json.ksdiy.cn/Vtche/BF/3806655430.m3u8
-        alternatives: []
-      - number: 第三集
-        name: 高清
-        url: https://json.ksdiy.cn/Vtche/BF/3776011995.m3u8
-        alternatives: []
-      - number: 第四集
-        name: 高清
-        url: https://json.ksdiy.cn/Vtche/BF/4035473620.m3u8
-        alternatives: []
-      - number: 第五集
-        name: 高清
-        url: https://json.ksdiy.cn/Vtche/BF/3336743355.m3u8
-        alternatives: []
-      - number: 第六集
-        name: 高清
-        url: https://json.ksdiy.cn/Vtche/BF/1410197963.m3u8
-        alternatives: []
-      - number: 第七集
-        name: 高清
-        url: https://json.ksdiy.cn/Vtche/BF/1967049568.m3u8
-        alternatives: []
+    label: 后翼弃兵
+    seasons:
+      - season_number: 1
+        season_title: 第一季
+        episodes:
+          - number: 第1集
+            title: 开局
+            name: 高清
+            url: https://json.ksdiy.cn/Vtche/BF/1631354252.m3u8
+            alternatives: []
+          - number: 第2集
+            title: 开放
+            name: 高清
+            url: https://json.ksdiy.cn/Vtche/BF/3806655430.m3u8
+            alternatives: []
+          - number: 第3集
+            title: 兵
+            name: 高清
+            url: https://json.ksdiy.cn/Vtche/BF/3776011995.m3u8
+            alternatives: []
+          - number: 第4集
+            title: 防御
+            name: 高清
+            url: https://json.ksdiy.cn/Vtche/BF/4035473620.m3u8
+            alternatives: []
+          - number: 第5集
+            title: 将军
+            name: 高清
+            url: https://json.ksdiy.cn/Vtche/BF/3336743355.m3u8
+            alternatives: []
+          - number: 第6集
+            title: 结束
+            name: 高清
+            url: https://json.ksdiy.cn/Vtche/BF/1410197963.m3u8
+            alternatives: []
+          - number: 第7集
+            title: 终局
+            name: 高清
+            url: https://json.ksdiy.cn/Vtche/BF/1967049568.m3u8
+            alternatives: []
 ---
