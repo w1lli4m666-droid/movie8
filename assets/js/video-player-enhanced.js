@@ -3998,7 +3998,7 @@ class VideoCache {
     };
     
     // 检查缓存大小限制
-    this.enforceCache Limits();
+    this.enforceCacheLimits();
     
     this.memoryCache.set(key, cacheEntry);
   }
