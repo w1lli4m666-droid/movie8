@@ -81,10 +81,18 @@
     <h2>{{ $videoLabel }}</h2>
     
     <!-- 加载必要的依赖 -->
-    <link rel="stylesheet" href="{{ "css/video-player-enhanced.css" | relURL }}">
+    {{ $vpCss := resources.Get "css/video-player-enhanced.css" }}
+    {{ if $vpCss }}
+    {{ $vpCss = $vpCss | resources.Minify | resources.Fingerprint }}
+    <link rel="stylesheet" href="{{ $vpCss.RelPermalink }}">
+    {{ end }}
+    {{ $vpJs := resources.Get "js/video-player-enhanced.js" }}
+    {{ if $vpJs }}
+    {{ $vpJs = $vpJs | resources.Minify | resources.Fingerprint }}
+    <script src="{{ $vpJs.RelPermalink }}"></script>
+    {{ end }}
     <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script src="{{ "js/video-player-enhanced.js" | relURL }}"></script>
     
     <!-- 使用自动选择的播放器 -->
     {{ partial "video-player/auto.html" (dict "videos" . "containerId" "main-video-player") }}
