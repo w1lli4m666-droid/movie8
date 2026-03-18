@@ -5,44 +5,66 @@
   window.addEventListener('load', () => {
     const params = new URLSearchParams(window.location.search);
     const query = params.get('q');
-    
-    // 初始化 Pagefind UI
-    const ui = new PagefindUI({ 
-      element: "#search", 
+
+    const ui = new PagefindUI({
+      element: "#search",
       showSubResults: true,
-      showImages: false
+      showImages: false,
+      // 用 summary meta 作为 excerpt
+      excerptLength: 0,
     });
-    
+
+    // MutationObserver 监听结果渲染，注入 summary
+    var observer = new MutationObserver(function() {
+      document.querySelectorAll('.pagefind-ui__result:not([data-si])').forEach(function(result) {
+        result.setAttribute('data-si', '1');
+        var excerptEl = result.querySelector('.pagefind-ui__result-excerpt');
+        if (!excerptEl) return;
+        // summary 被 pagefind 索引后会出现在 excerpt 的 mark 标签附近
+        // 更可靠：直接读隐藏的 meta 元素（pagefind 会把 meta 内容注入到结果 DOM 的 data 属性）
+        var summaryAttr = result.getAttribute('data-pagefind-meta-summary');
+        if (summaryAttr) {
+          applyExcerpt(excerptEl, summaryAttr);
+          return;
+        }
+        // fallback：从结果链接 fetch pagefind fragment
+        var anchor = result.querySelector('.pagefind-ui__result-title a');
+        if (!anchor) return;
+        var url = anchor.getAttribute('href');
+        if (!url) return;
+        fetch(url)
+          .then(r => r.text())
+          .then(html => {
+            var doc = new DOMParser().parseFromString(html, 'text/html');
+            var el = doc.querySelector('[data-pagefind-meta="summary"]');
+            if (el) applyExcerpt(excerptEl, el.textContent.trim());
+          })
+          .catch(() => {});
+      });
+    });
+    observer.observe(document.getElementById('search'), { childList: true, subtree: true });
+
+    function applyExcerpt(el, text) {
+      if (!text) return;
+      var max = 120;
+      el.textContent = text.length > max ? text.slice(0, max) + '……' : text;
+    }
+
     if (query) {
       const decodedQuery = decodeURIComponent(query);
-      
-      // 使用 setInterval 轮询搜索框
       const checkInterval = setInterval(() => {
         const searchInput = document.querySelector('.pagefind-ui__search-input');
-        
         if (searchInput) {
           clearInterval(checkInterval);
-          
-          // 设置搜索词
           searchInput.value = decodedQuery;
-          
-          // 触发 input 事件
           searchInput.dispatchEvent(new Event('input', { bubbles: true }));
-          
-          // 触发 change 事件
           searchInput.dispatchEvent(new Event('change', { bubbles: true }));
-          
-          // 触发搜索按钮点击
           setTimeout(() => {
-            const searchButton = document.querySelector('.pagefind-ui__search-input-button');
-            if (searchButton) {
-              searchButton.click();
-            }
+            const btn = document.querySelector('.pagefind-ui__search-input-button');
+            if (btn) btn.click();
           }, 50);
         }
       }, 50);
-      
-      // 3秒后停止轮询
       setTimeout(() => clearInterval(checkInterval), 3000);
     }
   });

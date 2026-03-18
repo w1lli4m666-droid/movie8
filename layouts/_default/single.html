@@ -4,6 +4,10 @@
     <h1 data-pagefind-meta="title">{{ .Title }}</h1>
     <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006年01月02日" }}</time>
 
+    {{ with .Params.summary }}
+    <div data-pagefind-meta="summary" style="display:none">{{ . }}</div>
+    {{ end }}
+
     {{ with .Params.cover }}
     <img src="{{ . }}" alt="{{ $.Title }} 封面" class="post-cover">
     {{ end }}
