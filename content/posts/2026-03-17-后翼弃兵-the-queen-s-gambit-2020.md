@@ -21,36 +21,36 @@ videos:
           - number: 第1集
             title: 开局 Openings
             name: 高清
-            url: https://json.ksdiy.cn/Vtche/BF/1631354252.m3u8
+            url: https://vv.jisuzyv.com/play/QbYXW3Ka/index.m3u8
             alternatives: []
           - number: 第2集
             title: 兑子 Exchanges
             name: 高清
-            url: https://json.ksdiy.cn/Vtche/BF/3806655430.m3u8
+            url: https://vv.jisuzyv.com/play/Qe17WJRb/index.m3u8
             alternatives: []
           - number: 第3集
             title: 叠兵 Doubled Pawns
             name: 高清
-            url: https://json.ksdiy.cn/Vtche/BF/3776011995.m3u8
+            url: https://vv.jisuzyv.com/play/kazlvMYd/index.m3u8
             alternatives: []
           - number: 第4集
             title: 中局 Middle Game
             name: 高清
-            url: https://json.ksdiy.cn/Vtche/BF/4035473620.m3u8
+            url: https://vv.jisuzyv.com/play/Le3JQWMd/index.m3u8
             alternatives: []
           - number: 第5集
             title: 捉双 Fork
             name: 高清
-            url: https://json.ksdiy.cn/Vtche/BF/3336743355.m3u8
+            url: https://vv.jisuzyv.com/play/ZdPJ73wa/index.m3u8
             alternatives: []
           - number: 第6集
             title: 封盘 Adjournment
             name: 高清
-            url: https://json.ksdiy.cn/Vtche/BF/1410197963.m3u8
+            url: https://vv.jisuzyv.com/play/PdRBO3qd/index.m3u8
             alternatives: []
           - number: 第7集
             title: 残局 End Game
             name: 高清
-            url: https://json.ksdiy.cn/Vtche/BF/1967049568.m3u8
+            url: https://vv.jisuzyv.com/play/7e50QNBd/index.m3u8
             alternatives: []
 ---
