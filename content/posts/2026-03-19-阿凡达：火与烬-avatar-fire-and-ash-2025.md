@@ -20,7 +20,9 @@ rating: 7.6
 videos:
   - type: movie
     label: 阿凡达：火与烬
-    name: 高清
-    url: https://vip.ffzy-online.com/20251225/57336_6d628faa/index.m3u8
-    alternatives: []
+    name: 蓝光
+    url: https://media-bjcy-fy-person01.bjoss.ctyunxs.cn/PERSONCLOUD/543e19aa-d335-415d-9951-006f0558230b.m3u8?x-amz-CLIENTTYPEIN=UNKNOWN&AWSAccessKeyId=0Lg7dAq3ZfHvePP8DKEU&x-amz-userLevel=0&x-amz-limitrate=51200&x-amz-UID=269636103&x-amz-APPID=828221&response-content-disposition=attachment%3Bfilename%3D%22%E6%AD%A3%E7%89%87.m3u8%22%3Bfilename*%3DUTF-8%27%27%25E6%25AD%25A3%25E7%2589%2587.m3u8&x-amz-CLIENTNETWORK=UNKNOWN&x-amz-CLOUDTYPEIN=PERSON&Signature=lBUF/4NV8k7VVHT/73ZMDW52KZI%3D&Expires=1775612518&x-amz-FSIZE=220410&x-amz-UFID=324521239987331807
+    alternatives:
+      - name: 高清
+        url: https://vip.ffzy-online.com/20251225/57336_6d628faa/index.m3u8
 ---
